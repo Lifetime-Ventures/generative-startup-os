@@ -1,0 +1,18 @@
+# APIキー・認証情報（絶対にコミットしないこと）
+claude_desktop_config.json
+.env
+.env.local
+.env.*.local
+
+# OS・エディタ
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ログ
+*.log
+npm-debug.log*
+
+# Node.js
+node_modules/
