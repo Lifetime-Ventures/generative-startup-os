@@ -1,12 +1,15 @@
-# /update-crm — 顧客開発・営業パイプライン管理
+# /update-crm — 顧客開発・投資家関係管理
+# Phase: 2以降（Phase 1でも利用可）
+# Last Updated: v5.0
 
-**発動コマンド**: `/update-crm` または `/sync-all` 実行時に自動判定
-**Phase**: 2以降（Phase 1でも利用可）
+---
 
-## 設計思想
+## Purpose
 
 「創業者の作りたいもの」ではなく、「顧客が切実に痛がっている課題」がロードマップを決める。
 顧客との対話から「信号」を抽出し、技術タスクへ物理的に配線する。
+
+投資家関係（IRM）の進捗も一元管理する。
 
 ---
 
@@ -34,23 +37,39 @@
 
 ---
 
+## Investor Sentiment（投資家関係スコア）
+
+投資家候補との面談から「興味度」を1-10でAIが算出する：
+
+```
+スコアリング基準:
+
+9-10: 「次回面談を自分からセット・DD資料を要求」
+8:    「積極的な質問・紹介の申し出」
+6-7:  「面談に参加・標準的な質問」
+4-5:  「受け身・メール返信が遅い」
+1-3:  「明確な断り・無反応」
+```
+
+---
+
 ## 実行プロトコル
 
-### 議事録からの自動抽出
+### /sync-all からの自動連携
 
-`/sync-all` で顧客MTGの議事録が入力された場合：
+`/sync-all` で顧客・投資家MTGの議事録が入力された場合に自動実行：
 
-1. **顧客名・組織を特定** → Organizations DB に存在しない場合は新規作成を提案
-2. **Pain Scoreを算出** → 発言内容からスコアリング
-3. **次のアクションを抽出** → Tasks DB に登録を提案
-4. **Stage を更新** → Lead/Qualified/Active/Closed のどれかを判定
-5. **CRM更新のサマリーを報告**
+1. **組織を特定** → DB7（Organizations）に存在しない場合は新規作成を提案
+2. **Pain Score / Investor Sentimentを算出** → 発言内容からスコアリング
+3. **次のアクションを抽出** → DB4（Tasks）に登録を提案
+4. **Stageを更新** → Lead/Qualified/Active/Closed のどれかを判定
+5. **担当者情報を更新** → DB8（Contacts）に Key Insight を追記
 
 ### 手動実行時
 
 ```
-「どの顧客の情報を更新しますか？
- または新しい顧客情報を入力してください」
+「どの顧客・投資家の情報を更新しますか？
+ または新しい情報を入力してください」
 
 入力形式:
 - 会社名：
@@ -58,9 +77,9 @@
 - 役職：
 - 打ち合わせの内容（箇条書き可）：
 - 次のアクション：
-- この顧客のPain Score（1-10）：
+- Category: Customer / Investor / Partner / Academic
 
-→ Organizations DB + Contacts DB + Tasks DB を一括更新することを提案
+→ DB7（Organizations）+ DB8（Contacts）+ DB4（Tasks）を一括更新することを提案
 ```
 
 ---
@@ -90,3 +109,26 @@ PMF Score = Pain Score ≥ 7 の顧客数 ÷ 全インタビュー顧客数
 | Active | PoC/パイロット進行中 | 週次確認タスクを設定 |
 | Closed-Won | 契約締結 | decisions.mdへの記録を提案 |
 | Closed-Lost | 失注 | 失注理由の記録を必須化 |
+
+---
+
+## Organizations DB カテゴリ（GSOS v5版）
+
+| カテゴリ | 用途 |
+|---------|------|
+| Customer | 顧客・顧客候補（Market Friction Score管理） |
+| Investor | 投資家候補・現投資家（Investor Sentiment管理） |
+| Partner VC | 共同投資家・シンジケーション候補 |
+| Partner | 事業パートナー・研究機関 |
+| Academic | 大学・研究所・公的研究機関 |
+| Government | NEDO・JST・行政 |
+| Vendor | ツール・サービスベンダー |
+| Competitor | 競合分析対象 |
+
+---
+
+## Limitations
+
+- 投資家名・出資見込み金額などはClaudeへの入力に含めない（匿名化すること）
+- PMF Scoreはサンプル数が10社以上になってから信頼性が上がる
+- Investor Sentimentは主観的な判断を含む。複数の接触履歴で補正する

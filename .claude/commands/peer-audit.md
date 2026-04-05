@@ -1,17 +1,18 @@
 # /peer-audit — ビジョン同期・相互監査プロトコル
+# Phase: 2以降
+# 推奨実行タイミング: 毎週月曜（Monday Promise設定）または毎週金曜（振り返り）
+# Last Updated: v5.0
 
-**発動コマンド**: `/peer-audit`
-**使用場面**: 毎週月曜（Monday Promise設定）または毎週金曜（週次振り返り）
-**Phase**: 2以降
+---
 
-## 概要
+## Purpose
 
 2名以上のチームで「暗黙の理解のズレ」を早期に検出し、
 創業者の属人化と共同創業者の孤独を防ぐ。
 
 ---
 
-## Monday Promise プロトコル
+## Monday Promise プロトコル（毎週月曜・自動実行）
 
 毎週月曜の起動時に自動実行する：
 
@@ -31,13 +32,14 @@
 ```
 
 各メンバーのリストを受け取ったら：
-1. Tasks DB に自動登録することを提案（Original Due と Due Date を同日設定）
-2. context.mdの今週コミットを更新することを提案
+1. Tasks DB（DB4）に自動登録することを提案
+2. team/[name]/context.md の今週フォーカスを更新することを提案
 3. 依存関係の確認（AのタスクがBを待っていないか）
+4. **Focus Guard確認**：各メンバーのDoingが3件超でないか確認
 
 ---
 
-## Semantic Drift Detection（用語・定義の矛盾検知）
+## Semantic Drift Detection（月1回）
 
 月1回、以下のチェックを実行する：
 
@@ -69,12 +71,16 @@
 `/weekly-roast` に統合して実行する：
 
 ```
+PRR計算式:
+Integrity Rate = 1.0 × (0.5 ^ Penalty Count)
+
 Founder PRR = 創業者の完了加重工数 / 創業者のコミット加重工数
 Member PRR  = メンバーの完了加重工数 / メンバーのコミット加重工数
 
 ボトルネック検知:
 - 一方のPRRが60%未満 → 「[名前]がボトルネックになっています。何が詰まっていますか？」
 - PRRの差が20%以上 → 「タスク配分に偏りが生じています」
+- 一方のDoingが3件超 → 「Focus Guard: [名前]のタスクが集中しています」
 ```
 
 ---
@@ -90,6 +96,14 @@ Member PRR  = メンバーの完了加重工数 / メンバーのコミット加
 2. 「今週、もっとこうしてほしかったことを1つ教えてください」
 3. 「来週、相手に期待することを1つ教えてください」
 
-→ 回答をteam/[name]/context.mdに記録することを提案
+→ 回答を team/[name]/context.md に記録することを提案
 → 重大なズレが検出された場合は decisions.md への記録を提案
 ```
+
+---
+
+## Limitations
+
+- Semantic Drift Detectionは月1回で十分。毎週実行すると負荷が高い
+- Dual PRRはタスクデータが十分にNotionに入力されていることが前提
+- 相手への期待は「行動」で伝える。感情・人格への言及は禁止
