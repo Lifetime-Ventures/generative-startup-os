@@ -33,8 +33,8 @@ Format: [Semantic Versioning](https://semver.org). Types: `Added` / `Changed` / 
 
 ### Removed
 - All hardcoded organization-specific names, Notion page IDs, and Slack user IDs
-- `OIST Connection` checkbox from Organizations DB schema
-- `OIST Researcher` hardcoded role from Contacts DB schema
+- Institution-specific `Connection` checkbox from Organizations DB schema
+- Institution-specific hardcoded roles from Contacts DB schema
 
 ### Security
 - Added `WHAT-NOT-TO-INPUT.md` — guidance on what must not be sent to Claude (unpublished patents, patient data, export-controlled technology)

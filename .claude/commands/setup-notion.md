@@ -197,5 +197,5 @@ CREATE TABLE "Contacts" (
 | DB3: Decisions | DB3 | Decision Type追加 |
 | DB4: Tasks | DB4 | Integrity Rate計算式を0.5^n方式に統一 |
 | DB5: Meeting Memos | DB5 | CategoryにAcademic追加 |
-| DB7: Organizations | DB7 | LP→Investor読み替え・OIST Connection削除 |
+| DB7: Organizations | DB7 | LP→Investor読み替え・Connection項目削除 |
 | DB8: Contacts | DB8 | Role拡充 |
