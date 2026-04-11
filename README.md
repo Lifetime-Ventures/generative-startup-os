@@ -1,11 +1,11 @@
 # Generative Startup OS
 
 **ディープテック・スタートアップのためのAI組織OS**
-*Created by Lifetime Ventures × OIST*
+*Created by Lifetime Ventures*
 
 ---
 
-OISTや日本のアカデミア発の科学技術が世界に届くまでに、数百の判断がある。
+日本のアカデミア発の科学技術が世界に届くまでに、数百の判断がある。
 Lifetime Ventures はその判断に伴走するために、このOSを投資先に提供する。
 
 あなたには、論文には書いていない判断の積み重ねがある。
@@ -136,4 +136,4 @@ generative-startup-os/
 
 ---
 
-*Lifetime Ventures が OIST・日本のアカデミア発ディープテック投資先に提供するAI組織OSパッケージ。*
+*Lifetime Ventures が日本のアカデミア発ディープテック投資先に提供するAI組織OSパッケージ。*
