@@ -46,7 +46,7 @@ Realistic time: **15-25 minutes** for Path 1 (Circleback), **25-40 minutes** for
 
 ### Path 1 — Circleback (recommended)
 
-1. **Notion template duplicate** (30 sec) — click the [Notion template URL](#notion-template) (link will be added when ready), choose your private workspace, "Duplicate"
+1. **Notion template duplicate** (30 sec) — *(Notion template URL will be added in the `claude/v0-notion-template` follow-up PR.)* Once published, click the link, choose your private workspace, then "Duplicate".
 2. **Claude.ai new Project** (1 min) — create new Project, paste `prompts/system-prompt.md` content into Custom Instructions
 3. **Connectors OAuth × 3** (2 min) — in Claude.ai Settings → Connectors:
    - Notion (Anthropic official)
