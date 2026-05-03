@@ -1,0 +1,66 @@
+{
+  "_blueprint_metadata": {
+    "name": "Inbox AI Relevance Filter",
+    "version": "1.0.0",
+    "gsos_version": "6.0",
+    "description": "Periodically scans DB9 Inbox unread items, scores OKR relevance using Claude Haiku, updates the OKR Relevance field.",
+    "estimated_monthly_ops": 200,
+    "required_connections": ["notion", "anthropic"],
+    "estimated_api_cost_monthly_usd": "5-8",
+    "instructions": "This Blueprint depends on the OKR text being maintained in .claude/context.md or a separate Notion page. Update the system prompt to embed your current OKR for accurate scoring."
+  },
+  "name": "GSOS: Inbox AI Filter",
+  "flow": [
+    {
+      "id": 1,
+      "module": "schedule:trigger",
+      "version": 1,
+      "parameters": {
+        "cron": "0 */6 * * *"
+      }
+    },
+    {
+      "id": 2,
+      "module": "notion:searchObjects",
+      "version": 1,
+      "parameters": {
+        "databaseId": "YOUR_DB9_INBOX_ID_HERE",
+        "filter": {
+          "property": "Status",
+          "select": {
+            "equals": "Unread"
+          }
+        },
+        "limit": 20
+      }
+    },
+    {
+      "id": 3,
+      "module": "anthropic:sendMessage",
+      "version": 1,
+      "parameters": {
+        "model": "claude-haiku-4-5",
+        "max_tokens": 100,
+        "system": "You are an OKR relevance scorer. Given a Subject/Body and the founder's current OKR, output a single number 1-10 representing how relevant this item is to the active OKRs. 10 = directly advances a Key Result. 1 = unrelated noise.\n\nCURRENT OKR:\n[Replace this section with your current OKR text from .claude/context.md]",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Subject: {{2.properties.Subject_Snippet}}\n\nSummary: {{2.properties.AI_Summary}}\n\nBody (excerpt): {{2.properties.Body}}"
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "module": "notion:updateDatabaseItem",
+      "version": 1,
+      "parameters": {
+        "pageId": "{{2.id}}",
+        "properties": {
+          "OKR Relevance": "{{3.text}}",
+          "Status": "Triaged"
+        }
+      }
+    }
+  ]
+}

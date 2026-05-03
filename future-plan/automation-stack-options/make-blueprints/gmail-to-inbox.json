@@ -1,0 +1,90 @@
+{
+  "_blueprint_metadata": {
+    "name": "Gmail to GSOS Inbox",
+    "version": "1.0.0",
+    "gsos_version": "6.0",
+    "description": "Watches Gmail for important emails, summarizes with Claude, writes to Notion DB9 Inbox.",
+    "estimated_monthly_ops": 300,
+    "required_connections": ["gmail", "anthropic", "notion"],
+    "instructions": "Import this blueprint to Make.com. Configure connections in order: Gmail OAuth → Anthropic API key → Notion integration token. Set DB9 Inbox database ID in the Notion module."
+  },
+  "name": "GSOS: Gmail to Inbox",
+  "flow": [
+    {
+      "id": 1,
+      "module": "gmail:watchEmails",
+      "version": 1,
+      "parameters": {
+        "folder": "INBOX",
+        "filter": {
+          "labels": ["IMPORTANT", "STARRED"],
+          "excludeLabels": ["SPAM", "TRASH"]
+        },
+        "maxResults": 10
+      },
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 2,
+      "module": "anthropic:sendMessage",
+      "version": 1,
+      "parameters": {
+        "model": "claude-haiku-4-5",
+        "max_tokens": 500,
+        "system": "You are an inbox triage assistant for a deep tech startup founder. Summarize the email in 2-3 sentences and categorize it as: Customer / Investor / Hiring / Partner / Mentor / Internal / Other. Output JSON: {summary, category, priority (1-10), suggested_action}.",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Subject: {{1.subject}}\n\nFrom: {{1.from.address}}\n\nBody:\n{{1.text}}"
+          }
+        ]
+      },
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 3,
+      "module": "notion:createDatabaseItem",
+      "version": 1,
+      "parameters": {
+        "databaseId": "YOUR_DB9_INBOX_ID_HERE",
+        "properties": {
+          "Subject/Snippet": "{{1.subject}}",
+          "Source": "Gmail",
+          "Sender": "{{1.from.name}} <{{1.from.address}}>",
+          "Direct Mention": false,
+          "OKR Relevance": "{{2.priority}}",
+          "Category": "{{2.category}}",
+          "Received At": "{{1.date}}",
+          "Status": "Unread",
+          "AI Summary": "{{2.summary}}",
+          "Original Link": "https://mail.google.com/mail/u/0/#inbox/{{1.id}}",
+          "Body": "{{1.text}}"
+        }
+      },
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 0
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "scenario": {
+      "scheduling": {
+        "type": "interval",
+        "interval": 15
+      }
+    }
+  }
+}

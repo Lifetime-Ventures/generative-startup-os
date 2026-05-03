@@ -25,6 +25,8 @@ Scan paths (OSS-derivable surface for this repo):
     notion-templates/**/*.md
     zapier-templates/**/*.md / *.json
     tools/*.py / *.sh
+    scripts/*.sh / *.md           (operational helpers)
+    future-plan/**/*.md / *.txt / *.yaml / *.json / *.sh   (idea-stock content)
     README.md, CLAUDE.md, CONTRIBUTING.md, INSTALL.md
   Exclude (non-OSS, scan source itself, build artifacts):
     .git/, node_modules/, .gstack/, scan_keywords/*.txt itself
@@ -78,10 +80,28 @@ INCLUDE_GLOBS = [
     "zapier-templates/**/*.json",
     "tools/*.py",
     "tools/*.sh",
+    # scripts/ operational helpers (added with future-plan/ infrastructure)
+    "scripts/*.sh",
+    "scripts/*.md",
+    # future-plan/ idea-stock content (sanitization rules apply equally)
+    "future-plan/**/*.md",
+    "future-plan/**/*.txt",
+    "future-plan/**/*.yaml",
+    "future-plan/**/*.yml",
+    "future-plan/**/*.json",
+    # *.json.example must be scanned explicitly: Path.glob suffix matching means
+    # `**/*.json` does NOT match `foo.json.example` (suffix is `.example`).
+    "future-plan/**/*.json.example",
+    "future-plan/**/*.sh",
     "README.md",
     "CLAUDE.md",
     "CONTRIBUTING.md",
     "INSTALL.md",
+    # NOTE: AGENTS.md is intentionally NOT scanned. It contains illustrative
+    # "what NOT to commit" examples (e.g., specific metric values shown as
+    # bad-example placeholders) that would trip the sensitive_metrics regexes.
+    # The file is human-curated under the trust boundary; scanning it would
+    # only produce noise.
 ]
 
 # Excluded path substrings (non-OSS / scan source / build artifacts)

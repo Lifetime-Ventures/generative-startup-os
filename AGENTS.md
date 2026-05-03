@@ -72,6 +72,14 @@ If your PR fails the scan and you believe it's a false positive:
 
 This makes Kimura's review queue scannable.
 
+**PR templates** live in `.github/PULL_REQUEST_TEMPLATE/`:
+- `default.md` — for normal feature / fix / docs PRs (full functional review)
+- `future-plan.md` — for PRs that ONLY add content under `future-plan/` (sanitization-only review)
+
+When opening a PR via web UI for a `future-plan/`-only branch, switch templates by appending `?template=future-plan.md` to the compare URL. The `scripts/future-plan-add.sh` helper handles this automatically when `gh` CLI is installed.
+
+**`future-plan/` is a sanctioned subtree** for non-authoritative idea-stock content (v2 schema candidates, Phase 2+ exploration). The same Tier 0/1/2/3 rules apply equally — no "draft folder" exception. See `future-plan/README.md` for the cherry-pick process and sunset criteria.
+
 **PR descriptions must include:**
 - Summary of what changed and why
 - The OSS screening scan result (if it ran during local dev: `python3 tools/oss_screening_scan.py` clean)

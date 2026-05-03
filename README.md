@@ -147,6 +147,10 @@ This is OSS. We accept skill contributions, Notion template improvements, README
 
 AI contributors (Claude Code, Codex, Gemini) — read [`AGENTS.md`](./AGENTS.md) before opening PRs. There are sanitization rules and a CI screening gate; both must be satisfied for merge.
 
+### `future-plan/` — idea stock for v2 and Phase 2+
+
+The [`future-plan/`](./future-plan/) directory holds non-authoritative design materials curated for the post-90-day schema unfreeze and Phase 2+ feature exploration. Contents are **not** part of v0.1.0 behavior and should be ignored by anyone running the OS today. Ideas land here from chat-thread design discussions via [`scripts/future-plan-add.sh`](./scripts/future-plan-add.sh) and graduate into live code via separate, focused PRs at unfreeze. See [`future-plan/README.md`](./future-plan/README.md) for the cherry-pick process and sunset criteria.
+
 ## License
 
 MIT. See [LICENSE](./LICENSE).

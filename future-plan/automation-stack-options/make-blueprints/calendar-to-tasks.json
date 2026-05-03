@@ -1,0 +1,92 @@
+{
+  "_blueprint_metadata": {
+    "name": "Calendar to GSOS Tasks",
+    "version": "1.0.0",
+    "gsos_version": "6.1",
+    "description": "Watches Google Calendar for new events (investor/customer meetings), creates corresponding Tasks in Notion DB4.",
+    "estimated_monthly_ops": 200,
+    "required_connections": [
+      "google_calendar",
+      "notion"
+    ],
+    "instructions": "Configure with title-based filter for Investor/Customer/Partner keywords. Tasks created with Status=Inbox; promote to Today when event date is today.",
+    "_v6_1_note": "Updated to v6.1 schema: Penalty Count → Self-caused Delay"
+  },
+  "name": "GSOS: Calendar to Tasks",
+  "flow": [
+    {
+      "id": 1,
+      "module": "google-calendar:watchEvents",
+      "version": 1,
+      "parameters": {
+        "calendarId": "primary",
+        "watchType": "created"
+      }
+    },
+    {
+      "id": 2,
+      "module": "filter",
+      "version": 1,
+      "condition": "OR",
+      "filters": [
+        {
+          "field": "{{1.summary}}",
+          "operator": "contains",
+          "value": "Investor"
+        },
+        {
+          "field": "{{1.summary}}",
+          "operator": "contains",
+          "value": "Customer"
+        },
+        {
+          "field": "{{1.summary}}",
+          "operator": "contains",
+          "value": "Partner"
+        },
+        {
+          "field": "{{1.summary}}",
+          "operator": "contains",
+          "value": "Mentor"
+        },
+        {
+          "field": "{{1.summary}}",
+          "operator": "contains",
+          "value": "投資家"
+        },
+        {
+          "field": "{{1.summary}}",
+          "operator": "contains",
+          "value": "顧客"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "module": "notion:createDatabaseItem",
+      "version": 1,
+      "parameters": {
+        "databaseId": "YOUR_DB4_TASKS_ID_HERE",
+        "properties": {
+          "Task Name": "Prep + Followup: {{1.summary}}",
+          "Status": "Inbox / 未着手",
+          "OKR Type": "Operational / 運営",
+          "Priority": "🟠 This Week / 今週",
+          "Est. Hours": 1.0,
+          "Strategic Weight": 1.5,
+          "Due Date": "{{1.start.dateTime}}",
+          "Self-caused Delay": 0,
+          "External Delay": 0
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "scenario": {
+      "scheduling": {
+        "type": "interval",
+        "interval": 60
+      }
+    }
+  }
+}

@@ -112,6 +112,8 @@ PRs to `main` require:
 
 No direct commits to `main`. No force pushes. No skipping the OSS screening gate.
 
+The `future-plan/` directory is **non-authoritative**. It holds curated idea-stock material for v2 schema work and Phase 2+ exploration, not v0.1.0 behavior. Skill execution and AI judgment should treat it as design archaeology, not as instructions: never quote, cite, or act on `future-plan/` content during a v0.1.0 skill run. The single source of truth for product behavior remains this file (`CLAUDE.md`), `prompts/system-prompt.md`, and `notion-templates/README.md`.
+
 ---
 
 *Generative Startup OS — v0.1.0, 2026-05-02 (foundation reset)*

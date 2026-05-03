@@ -1,0 +1,33 @@
+{
+  "_blueprint_metadata": {
+    "name": "Weekly Roast Trigger",
+    "version": "1.0.0",
+    "gsos_version": "6.0",
+    "description": "Sends a Friday evening reminder to run /weekly-roast. Optional Notion page creation.",
+    "estimated_monthly_ops": 5,
+    "required_connections": ["notion"],
+    "instructions": "Configure your time zone in the cron expression. Default is Friday 18:00 JST. Adjust the message to your preferred reminder format."
+  },
+  "name": "GSOS: Weekly Roast Trigger",
+  "flow": [
+    {
+      "id": 1,
+      "module": "schedule:trigger",
+      "version": 1,
+      "parameters": {
+        "cron": "0 18 * * 5",
+        "timezone": "Asia/Tokyo"
+      }
+    },
+    {
+      "id": 2,
+      "module": "notion:createPage",
+      "version": 1,
+      "parameters": {
+        "parentDatabaseId": "YOUR_REMINDERS_DB_ID_HERE",
+        "title": "🔥 Weekly Roast Reminder - {{formatDate(now; \"YYYY-MM-DD\")}}",
+        "content": "Time for /weekly-roast. Run the following:\n\n1. Open Claude.ai or Claude Code\n2. Execute /weekly-roast [today's date] [your name]\n3. Address Part A (self-criticism packet) before Friday end-of-day\n4. Run AI Board Meeting on Sunday evening if scheduled\n\nReminder: The 'next person to talk to' field is mandatory. Don't skip it."
+      }
+    }
+  ]
+}
