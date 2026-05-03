@@ -384,10 +384,117 @@ Claude> Honest framing draft:
 
 ---
 
+## `/help` — list all skills
+
+```
+founder> /help
+
+Claude> Generative Startup OS — skill catalog
+        
+        Daily / weekly cadence:
+          /sync-all       — daily morning. Ingest yesterday's meetings into Notion.
+          /today          — daily morning. Pick 1-3 actions from this week's commitments.
+          /weekly-roast   — Friday afternoon. Reflect on the week, draft next week.
+        
+        Setup / monthly:
+          /okr-set        — initial setup or quarterly rollover. Drafts Mission + KRs.
+          /investor-update— month start. Generates a Google Doc draft for LPs.
+        
+        Utility:
+          /help           — this message.
+          /migrate        — upgrade Notion DB schema to a newer version.
+        
+        Type any of these in chat to invoke. Which would you like to run?
+
+founder> [either picks one, or asks "what should I run?"]
+
+Claude> [if picked: invokes that skill]
+        [if unsure: "Tell me what you're trying to accomplish — I'll suggest one."]
+```
+
+---
+
+## `/migrate` — DB schema upgrade
+
+### Already on current version (Phase 1 default)
+
+```
+founder> /migrate
+
+Claude> Pre-flight check passed.
+        Reading Mission page metadata...
+        Current schema_version: 1
+        Latest skill knows: v1
+        
+        Already on schema v1. No migration needed.
+```
+
+### Founder DB older than skill (future Phase 2 scenario)
+
+```
+founder> /migrate
+
+Claude> Pre-flight check passed.
+        Current schema_version: 1
+        Latest skill knows: v2
+        
+        Migrating from v1 → v2 (1 step):
+        
+        Step 1/1: Adding `voice_calibration` column to Mission page metadata...
+        ✓ Column added
+        ✓ Existing rows backfilled with default
+        ✓ schema_version bumped to v2 on Mission page
+        ✓ schema_version bumped to v2 on 6 DBs (OKR Quarter, Weekly Commitment, etc)
+        
+        Migration complete. Schema is now v2.
+```
+
+### Founder DB newer than skill (founder has stale system prompt)
+
+```
+founder> /migrate
+
+Claude> Pre-flight check passed.
+        Current schema_version: 2
+        Latest skill knows: v1
+        
+        ⚠ Your Notion DB is at schema v2, but this Project's system prompt 
+        only knows up to v1.
+        
+        Update your Project's Custom Instructions from the latest at:
+        https://github.com/Lifetime-Ventures/generative-startup-os/blob/main/prompts/system-prompt.md
+        
+        Then re-run /migrate.
+```
+
+### Migration error mid-flight
+
+```
+founder> /migrate
+
+Claude> Pre-flight check passed.
+        Migrating from v1 → v3 (2 steps):
+        
+        Step 1/2: Adding columns to Weekly Commitment DB... ✓
+        Step 2/2: Backfilling new column from existing data...
+        
+        ✗ Notion API returned 5xx during step 2. Migration halted.
+        
+        State is partially upgraded:
+        - schema_version on Mission page: v2 (step 1 succeeded)
+        - schema_version on Weekly Commitment DB: v2
+        - schema_version on other DBs: v1 (step 2 didn't reach them)
+        
+        Run /migrate again after Notion recovers. The skill is idempotent — 
+        already-applied steps are skipped on retry.
+        
+        Error logged to Mission page metadata for debugging.
+```
+
+---
+
 ## What's NOT in this transcript
 
-- **`/help` skill** — pending in next PR (`claude/v0-skill-additions`)
-- **`/migrate` skill** — pending in same next PR (Phase 2 → P1 promotion per autoplan review)
 - **`/decision` skill** — Phase 2 deferred; in Phase 1, the founder writes Decisions Log entries manually in Notion
 - **Bilingual transcripts** — Phase 2 (currently English-default with Japanese on `/today` weekend skip)
 - **Mobile-specific transcripts** — same content; UI may render slightly different on Claude.ai mobile
