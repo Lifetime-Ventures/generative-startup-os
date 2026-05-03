@@ -1,0 +1,3 @@
+# Placeholder. DO NOT add real portfolio company names here.
+# Real values are injected via GitHub org secret LV_PORTFOLIO_COMPANIES at CI runtime.
+# See README.md in this directory for the full architecture.
