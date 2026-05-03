@@ -1,0 +1,3 @@
+# Placeholder. DO NOT add real founder names here.
+# Real values are injected via GitHub org secret LV_ACTIVE_FOUNDERS at CI runtime.
+# See README.md in this directory for the full architecture.

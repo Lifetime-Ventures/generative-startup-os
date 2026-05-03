@@ -1,193 +1,160 @@
 # Generative Startup OS
 
-**ディープテック・スタートアップのためのAI組織OS**
-*Created by Lifetime Ventures*
+> AI Chief of Staff for pre-team founders. Convert the meetings you're already having into structured OKRs, weekly commitments, and monthly investor updates — using only Claude.ai, Notion, and your AI meeting notes tool.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Status: Phase 1 Beta](https://img.shields.io/badge/Status-Phase%201%20Beta-orange.svg)](#status)
 
 ---
 
-日本のアカデミア発の科学技術が世界に届くまでに、数百の判断がある。
-Lifetime Ventures はその判断に伴走するために、このOSを投資先に提供する。
+## What this is
 
-あなたには、論文には書いていない判断の積み重ねがある。
-**このOSは、その判断をAIとともに記録し続け、共同創業者が来ても、投資家が変わっても消えない会社の知識にする。**
+A founder runs `/okr-set` in Claude.ai Chat. The OS reads their last 30 days of meetings (via Circleback), drafts 3 KRs and 5-7 weekly commitments grounded in what the founder actually said in pitches, and writes them to a Notion workspace duplicated 5 minutes ago.
 
-> Series Aのデューデリジェンスで「なぜその判断をしたか」「どのように技術優位性を積み上げたか」を説明できる会社になる。
+From that point: `/sync-all` each morning structures new meetings into commitments. `/today` picks 1-3 actions from the week. `/weekly-roast` Friday afternoon catches drift and drafts next week. `/investor-update` month start generates a Google Doc draft from the same source.
 
----
+Founder OKRs aren't missing — they're already in their meetings, just not structured. This OS structures them.
 
-## はじめる（Claude Code）
+## Who it's for
 
-```bash
-# 1. このリポジトリを「Use this template」でコピー（Private必須）
+Pre-team (solo, or 1-2 co-founder candidates) founders who:
 
-# 2. Claude Codeをインストール
-brew install node                          # Mac
-npm install -g @anthropic-ai/claude-code
-claude auth login
+- Already use an AI meeting notes tool (Circleback recommended; Granola supported via Zapier fallback path)
+- Already use Notion or are willing to start
+- Already have Claude.ai Pro or are willing to subscribe
+- Recognize the Monday-morning "what am I doing this week?" drift as their actual pain
 
-# 3. リポジトリをクローンして起動
-git clone https://github.com/[ユーザー名]/generative-startup-os.git
-cd generative-startup-os
-claude
-```
+**Not for**: post-team companies (use a real PM tool), engineers building a startup who prefer code-first workflow, founders not using AI meeting notes (Phase 2 fallback path will address this).
 
-**後はClaudeが案内します。** 6つの質問に答えるだけで、MCP設定・Notion DB構築・メモリファイル生成が自動完了します。
+## Why we're building it
 
-詳しいセットアップ手順（Mac/Windows/Claude.ai版）→ [README_SETUP.md](./README_SETUP.md)
+Lifetime Ventures has watched the same pattern across 8 years of pre-team founder relationships: founders write OKRs, then don't open them for two weeks. They lose the thread. Existing solutions (Notion AI templates, 15Five, Reflexion, Notion 1-pagers) all fail in the same way: they ask the founder to write OKRs from a blank page.
+
+Founders aren't missing OKRs. They're missing structure on the OKRs they're already articulating in investor pitches, customer PoC calls, and co-founder thesis conversations. AI meeting notes tools (Circleback, Granola) are recording all of it. We're building the bridge.
 
 ---
 
-## Claude.aiブラウザ版でも使えます
+## Quickstart
 
-Claude CodeなしでもClaude.aiのブラウザ版から使えます。
-Notion自動連携・カレンダーブロックなどの自動機能は動作しませんが、
-AI Board Meeting・週次レビュー・OKR分析などの思考支援機能はフル活用できます。
+Realistic time: **15-25 minutes** for Path 1 (Circleback), **25-40 minutes** for Path 2 (Granola via Zapier).
 
-→ 詳細は [README_SETUP.md](./README_SETUP.md) の「Claude.aiでの使い方」を参照
+### Prerequisites
 
----
+- [ ] Claude.ai Pro subscription
+- [ ] A Notion workspace **only you can access** (private workspace recommended; shared workspaces expose your investor updates and decisions to coworkers)
+- [ ] Circleback account with at least 1 week of recorded meetings (or Granola if using Path 2)
+- [ ] Google Workspace account (Gmail + Calendar)
 
-## 3つのフェーズと全機能
+### Path 1 — Circleback (recommended)
 
-### Phase 1 — プレチーム（Founder 1名）
-**課題**: 創業者の思考・判断・知財をAIが記憶し続ける
+1. **Notion template duplicate** (30 sec) — click the [Notion template URL](#notion-template) (link will be added when ready), choose your private workspace, "Duplicate"
+2. **Claude.ai new Project** (1 min) — create new Project, paste `prompts/system-prompt.md` content into Custom Instructions
+3. **Connectors OAuth × 3** (2 min) — in Claude.ai Settings → Connectors:
+   - Notion (Anthropic official)
+   - Google Calendar (Anthropic official)
+   - Circleback ([claude.com/connectors/circleback](https://claude.com/connectors/circleback))
+4. **Run `/okr-set`** in Chat (3-5 min) — answers Mission 5 questions, yes/nos KR drafts and weekly commitments
+5. **Done** (T+15-25 min) — Mission draft, OKR Quarter 3 KRs, Weekly Commitment 5-7 items, Today's Focus row 1 in Notion
 
-| コマンド | 機能 |
-|---------|------|
-| `/setup-mcp` | Notion・Calendar・Granola等のMCP設定を自動生成（Claude Code vs Claude.ai比較付き） |
-| `/setup-notion` | Notion 8DBを自動構築（quick/standard/full） |
-| `/sync-all` | 6ソース並列スキャン → Notion DB網羅転記 → 翌日フォーカス確定 → カレンダーブロック |
-| `/weekly-roast` | AI Coach Session（前段）→ 自己批判パケット → AI Board Meeting（週次Board Meeting日の夜） |
-| `/okr-check` | OKRのL2分析・Confidence Score算出・次期KR修正案 |
-| `/moat-capture` | 技術的優位性・知財をmoat-strategy.mdに記録 |
-| `/irm-briefing` | 投資家面談の準備ブリーフィング |
+### Path 2 — Granola via Zapier (only if you already pay for Zapier)
 
-### Phase 2 — プレシード（Founder + Member 2名）
-**課題**: ビジョン同期・属人化防止・顧客開発の並走
+Same as Path 1, but step 3 swaps Circleback connector for a Zapier setup:
+- Zapier "Note Added to Granola Folder" trigger (folder: "GS-OS sync")
+- Zapier "Create Notion Database Item" action (target: Meeting Notes DB)
+- Add Notion + Google Calendar connectors (skip Circleback)
 
-Phase 1の全機能に加えて：
-
-| コマンド | 機能 |
-|---------|------|
-| `/onboard-me [role] [name]` | 新メンバーが30分で会社の文脈を自律習得 + AI Coach Session設定の初期化 |
-| `/peer-audit` | Monday Promise設定・Semantic Drift Detection・Dual PRR・Focus Guard |
-| `/update-crm` | 顧客開発パイプライン管理・PMF Score・Investor Sentiment計算 |
-| `/board-prep` | 取締役会・投資家報告資料の自動生成（懸念事項はAIが自動生成） |
-
-### Phase 3 — シード（チーム 3〜5名）
-**課題**: N:N情報整流・Series A準備・組織の再現性確立
-
-Phase 1・2の全機能に加えて：
-
-| コマンド | 機能 |
-|---------|------|
-| `/team-prr` | チーム全体のPRRダッシュボード・ボトルネック検知 |
-| `/narrative-check` | ピッチ・採用・提案の一貫性チェック・Bus Factor計算 |
-| `/series-a-check` | Series A Readiness Score（25項目・目標85点） |
-| `/culture-audit` | 文化コンプライアンス・採用パイプライン |
-| `/monthly-gemini` | 月次Gemini戦略監査プロンプト生成 |
+Cost note: Granola Basic (free) + Zapier paid ($20/mo) ≈ Circleback direct ($20/mo). If you don't already pay for Zapier, Path 1 is cleaner.
 
 ---
 
-## v5 の主な新機能
+## Skills (Phase 1)
 
-### 1. /sync-all が9ステップの日次L1スキャンに進化
-- **6ソース並列スキャン**（Calendar・Notion・Circleback・Granola・Gmail・Slack）
-- **差分管理**（memory/sync-state.mdで前回実行以降のみスキャン）
-- **DB6: Progress Update 自動生成**（翌日・翌々日の定例MTGごとに進捗レポートを前日生成）
-- **Focus Guard**（Doing 3件超で新規着手をブロック）
-- **翌日フォーカス確定 → カレンダーブロックまでセッション完結**
+| Skill | When | What it does |
+|---|---|---|
+| `/okr-set` | Initial setup, quarterly | Reads 30 days of meetings, drafts Mission + 3 KRs + 5-7 weekly commitments, founder yes/nos |
+| `/sync-all` | Each morning | Imports new meetings, AI-extracts actions, dedupe-checks against open commitments, founder yes/nos |
+| `/today` | Each morning | Picks 1-3 of this week's commitments based on KR priority, due, recent activity |
+| `/weekly-roast` | Friday afternoon | Aggregates the week, identifies drift from Mission, drafts next week's 5 commitments |
+| `/investor-update` | Month start | Compiles done commitments + decisions into a Google Doc draft for investor outreach |
 
-### 2. /weekly-roast が3段パイプラインに進化
-- **前段：AI Coach Session**（4エージェント・10ラウンド以上・月次ペルソナ棚卸）
-- **Part A：自己批判パケット**（Founder/Member共通）
-- **後段：AI Board Meeting**（5エージェント・context.mdで創業者がカスタマイズ可能）
-- Board Meetingの**エージェント構成・議題ローテーション・議事録置き場は全て自分で定義**
-
-### 3. Notion 8DBに進化（DB6: Progress Update新設）
-- **DB6: Progress Update**：定例MTG向けの進捗レポートを前日に自動生成
-- **PRR計算式を0.5の累乗方式に統一**（期限変更1回→0.5、2回→0.25、3回→0.125）
-- **Confidence Score**（KRの達成自信度を自動算出）
-- **Organizations DBのLP → Investor読み替え**（スタートアップ向けに再設計）
-
-### 4. /okr-check 新設
-- Confidence Score算出（PRR連動）
-- 原因分析（仮説 / 実行 / 外部要因）
-- 次期KR修正案
+`/sync-all` is **founder-triggered**, not automated. Calendar reminders prompt you to type the command; the AI does not run on a schedule on your behalf. We chose this over hosting servers and credentials. If you need true automation, that's on the Phase 2 backlog.
 
 ---
 
-## ファイル構成
+## What happens to your data
 
-```
-generative-startup-os/
-├── CLAUDE.md                    # OSの中枢神経（起動時に自動読み込み）
-├── README.md
-├── README_SETUP.md              # 詳細セットアップ手順（Mac/Windows/Claude.ai）
-│
-├── .claude/
-│   ├── context.md               # OKR・AI Board設定・DB IDs・フェーズ移行チェックリスト
-│   └── commands/
-│       ├── # Phase 1
-│       ├── setup-mcp.md         # MCP設定（Claude Code vs Claude.ai詳細比較）
-│       ├── setup-notion.md      # Notion 8DB自動構築
-│       ├── sync-all.md          # 9ステップ日次L1スキャン
-│       ├── weekly-roast.md      # AI Coach Session→自己批判→AI Board Meeting
-│       ├── okr-check.md         # OKR L2分析（新設）
-│       ├── moat-capture.md      # 知財・技術障壁の記録
-│       ├── irm-briefing.md      # 投資家面談ブリーフィング
-│       ├── # Phase 2
-│       ├── onboard-me.md        # 新メンバーオンボーディング + AI Coach設定初期化
-│       ├── peer-audit.md        # ビジョン同期・Dual PRR・Semantic Drift Detection
-│       ├── update-crm.md        # 顧客開発・PMF Score・Investor Sentiment
-│       ├── board-prep.md        # 取締役会・投資家報告資料
-│       └── # Phase 3
-│           ├── team-prr.md
-│           ├── narrative-check.md
-│           ├── series-a-check.md
-│           ├── culture-audit.md
-│           └── monthly-gemini.md
-│
-├── memory/                      # 組織の記憶（全フェーズ共通）
-│   ├── decisions.md             # 意思決定ログ
-│   ├── preferences.md           # 文化コード・禁止パターン
-│   ├── moat-strategy.md         # 技術的優位性・知財マップ
-│   ├── runway-vitals.md         # 財務バイタル
-│   ├── experiment-log.md        # R&D実験ログ（ディープテック専用）
-│   └── sync-state.md            # 日次同期状態管理（/sync-allが自動更新）
-│
-├── team/                        # Phase 2以降：メンバー別デスク
-│   └── founder/
-│       └── context.md
-│   # /onboard-me が team/[name]/context.md を自動生成
-│   # context.md には AI Coach Session設定（ペルソナ）も含む
-│
-├── claude_mcp_config.json.example
-└── .gitignore
-```
+When you use Generative Startup OS, your meeting transcripts and OKR data flow through:
+
+- **Anthropic Claude.ai** — your Project conversations and skill executions. Standard retention applies (we operate without Zero Data Retention to keep MCP connectors functional). [Anthropic Privacy Policy](https://www.anthropic.com/legal/privacy)
+- **Circleback** — your meeting recordings, transcripts, and summaries. Stays in your Circleback account; Anthropic accesses via your individual OAuth token. [Circleback Privacy](https://circleback.ai/privacy)
+- **Notion** — all OKR / Weekly / Today / Meeting / Updates / Decisions database content. Stored in your Notion workspace. [Notion Privacy](https://www.notion.so/privacy-policy)
+- **Google Calendar / Drive / Workspace** — Calendar reminders and Google Doc drafts (for investor updates). [Google Privacy](https://policies.google.com/privacy)
+- **Zapier** (Path 2 only) — your Granola API token and meeting note metadata flow through Zapier. [Zapier Privacy](https://zapier.com/privacy)
+
+**Lifetime Ventures hosts nothing in this stack. We do not see your meeting transcripts, OKRs, or any other data.** The only telemetry signal we collect (opt-in) is a weekly poll of your Notion `last_modified_at` timestamps to count active usage during the Phase 1 hearing batch.
+
+You can opt out at any time. You can also self-host all of this — the OS is open source.
 
 ---
 
-## PRR（Promise Reliability Ratio）
+## Notion data model
 
-```
-PRR = 完了タスクの加重工数合計 ÷ コミットした全タスクの加重工数合計
+Your Notion workspace will contain:
 
-加重工数 = Est Hours × Strategic Weight × Integrity Rate
+- **Mission & Strategy** (page) — thesis, target user, wedge, 5-year vision
+- **OKR Quarter** (DB) — current quarter Objective + 3-5 KRs, status, confidence, linked to commitments
+- **Weekly Commitment** (DB) — 3-7 KR-linked commitments per week, source-tagged
+- **Today's Focus** (DB) — 1-3 daily actions, KR-linked
+- **Meeting Notes** (DB) — meetings synced from Circleback (or Granola+Zapier), AI-summarized
+- **Investor Updates** (DB) — monthly draft archive
+- **Decisions Log** (DB) — D-ID numbered decisions, alternatives, rationale, confidence
 
-Integrity Rate = 1.0 × (0.5 ^ Penalty Count)
-  期限変更0回 → 1.0
-  期限変更1回 → 0.5（以前は0.7）
-  期限変更2回 → 0.25（以前は0.5）
-  期限変更3回 → 0.125（実質ゼロ）
-```
+Schema details and column-level documentation in [`notion-templates/`](./notion-templates/).
 
-- **75〜89%**：🟢 健全。このゾーンを維持するのが目標
-- **90%以上**：約束が軽すぎる。もっと挑戦的な目標を設定すべき
-- **60〜74%**：🟡 注意。コミット量を見直す
-- **60%未満**：🔴 危険。コミット量を半分に減らすか、詰まっている原因を探る
+If you customize the schema, prefix new columns with `_user_*` to avoid breaking skill behavior. The skills run a pre-flight schema validator and will abort with a clear message if a required column is missing or renamed.
 
 ---
 
-*Lifetime Ventures が日本のアカデミア発ディープテック投資先に提供するAI組織OSパッケージ。*
+## Compatibility
 
+| Platform | Path 1 (Circleback) | Path 2 (Granola Zapier) |
+|---|---|---|
+| Mac (desktop) | ✓ | ✓ |
+| Windows (desktop) | ✓ | ✗ (Granola is Mac/iOS only) |
+| Linux (desktop) | ✓ (Claude.ai web) | ✗ |
+| iPhone | partial (first install desktop recommended) | ✓ |
+| iPad | partial (same as iPhone) | partial |
+| Android | partial (Claude.ai mobile only; Granola unavailable) | ✗ |
+
+First install recommended on desktop. Mobile use thereafter is supported for `/today` and lightweight workflows.
+
+---
+
+## Status
+
+**Phase 1 Beta** (2026-05-02 foundation reset). 5-skill MVP shipping over the next 1-2 weeks. 5-founder hearing batch following. Pivot test: ≥3 of 5 founders install + use 3 weeks → Phase 2.
+
+This repository was reset on 2026-05-02 from an earlier Claude Code-first design. The current direction is **Claude.ai-first**, optimized for non-technical founders. Earlier `/setup-mcp`, `/peer-audit`, `/board-prep`, etc. commands are not part of Phase 1 scope.
+
+## Roadmap
+
+- **Phase 1** (~2 weeks) — 5-skill MVP shipping
+- **Phase 2** (post-hearing) — `/decision` skill, schema migration via `/migrate`, multi-language (English + Japanese), 2nd-person onboarding (`/onboard-me`), optional Web Dashboard layer
+- **Phase 3+** (vision, not committed) — pre-team alignment OS expansion (co-founder thesis debate, async investor update sharing), generative artifact engine (founder voice memo → publishable thesis essay, pitch deck v0 draft)
+
+## Contributing
+
+This is OSS. We accept skill contributions, Notion template improvements, README PRs, and bug reports. The 6-DB schema is frozen for the first 90 days post-launch; schema-breaking PRs will be deferred to v2.
+
+AI contributors (Claude Code, Codex, Gemini) — read [`AGENTS.md`](./AGENTS.md) before opening PRs. There are sanitization rules and a CI screening gate; both must be satisfied for merge.
+
+## License
+
+MIT. See [LICENSE](./LICENSE).
+
+## Origin
+
+Built and maintained by [Lifetime Ventures](https://lifetime-ventures.com). The framework distills 8 years of pre-team founder pattern recognition from LtV's portfolio support work into a self-serve OSS form. LP, portfolio, and internal LtV data are NOT part of this repository — see [`AGENTS.md`](./AGENTS.md) for the data tier policy.
+
+---
+
+*Generative Startup OS — v0.1.0, 2026-05-02 foundation reset*

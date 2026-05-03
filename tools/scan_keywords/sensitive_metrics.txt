@@ -1,0 +1,78 @@
+# Sensitive Metrics — regex deny-list (public-safe abstractions only)
+#
+# This file is COMMITTED to the public repo. Patterns here must be abstract
+# enough that the patterns themselves do not leak which specific values exist.
+# Specific values (e.g., the actual 億円 amount of a fund) are blocked by these
+# patterns, but the patterns themselves are generic.
+#
+# Format: 1 line = 1 Python regex. Comments start with #. Invalid regexes are warned
+# and skipped at CI time.
+#
+# Categories covered:
+#   1. Decimal-precision Japanese yen amounts (specific fund / portfolio metrics)
+#   2. Decimal-precision USD M/B amounts
+#   3. KR/OKR rows with specific percentages
+#   4. LP intro counts
+#   5. Runway / burn rate
+#   6. Royalty / equity stakes (OIST partnership specifics)
+#   7. IC vote ratios
+#
+# Sync source: this is a STARTER set. Public-OK subset of
+# edge-stream/startup-fa/reference/lifetime_pfc/scan_keywords/sensitive_metrics.txt
+# should be synced here after Kimura review (which patterns are abstract enough
+# for public exposure vs. which reveal too much by their existence).
+#
+# Test before adding:
+#   1. Does this regex match a real LtV-internal value that should NOT leak?
+#   2. Would a security researcher reading this regex learn anything specific
+#      about LtV's portfolio / metrics that they shouldn't?
+#   3. False-positive rate < 5% on existing public commits?
+# All three must be YES for the regex to be safe to commit.
+
+# === 1. Decimal-precision Japanese yen amounts ===
+# Blocks: "26.3億円", "12.5億円", "3.7兆円", "0.8億ドル"
+# Allows: "数億円規模", "億円単位", "low ten-figures yen"
+\d+\.\d+\s*億円
+\d+\.\d+\s*兆円
+\d+\.\d+\s*億ドル
+
+# === 2. Decimal-precision USD M/B amounts ===
+# Blocks: "$26.3M", "$1.5B", "$3.2B ARR", "USD 12.5M"
+# Allows: "low eight figures", "a few million", "mid-cap"
+\$\d+\.\d+\s*[MB]\b
+USD\s+\d+\.\d+\s*[MB]\b
+\b\d+\.\d+\s*[MB]\s+ARR\b
+\b\d+\.\d+\s*[MB]\s+raised
+
+# === 3. KR/OKR rows with specific percentages tied to specific fund/quarter ===
+# Blocks: "KR2.1 60%", "KR1.4 ●●●●● 100%", "OLtV2 KR3 75%"
+# Allows: "KR progress", "60% to target", generic discussion
+KR\d+(\.\d+)?\s+\d+%
+OLtV\d+\s+KR\d+
+
+# === 4. LP intro counts (specific) ===
+# Blocks: "30 LP intro", "12 LP committed", "5 LP target"
+# Allows: "LP outreach", "investor intros", "fundraising progress"
+\b\d+\s*LP\s+(intro|introduction|committed|target|signed)
+\b\d+\s*LPs?\s+(intro|introduction|committed|target|signed)
+
+# === 5. Runway / burn rate (specific) ===
+# Blocks: "18 months runway", "$120K monthly burn", "runway 8.5mo"
+# Allows: "extending runway", "burn discipline", "capital efficient"
+\b\d+\s*months?\s+runway\b
+\brunway\s+\d+(\.\d+)?\s*(months?|mo|m)\b
+\$\d+(\.\d+)?[KkMm]?\s+(monthly\s+)?burn\b
+\bburn\s+\$\d+(\.\d+)?[KkMm]?
+
+# === 6. Royalty / equity stakes (OIST partnership specifics) ===
+# Blocks: "26.3% royalty", "OIST 8.5% equity", "Innovation Fund 12% stake"
+# Allows: generic discussion of OIST partnership
+\b\d+(\.\d+)?\s*%\s+(royalty|equity|stake|carry)
+OIST\s+\d+(\.\d+)?\s*%
+
+# === 7. IC vote ratios (specific) ===
+# Blocks: "IC 4-1", "IC vote 3 of 5", "2 dissents"
+# Allows: "IC committee", "IC review", "external IC members"
+\bIC\s+\d+[-:]\d+
+\bIC\s+vote\s+\d+\s+of\s+\d+
+\b\d+\s+(dissent|dissents|abstain|abstains)\b

@@ -1,0 +1,74 @@
+name: OSS Export Screening
+
+# Public OSS gate. Mirrors the edge-stream private repo's same-named workflow.
+# Both repos consume the same GitHub organization secrets (LV_PORTFOLIO_COMPANIES,
+# LV_ACTIVE_FOUNDERS) so the deny-list has a single source of truth (edge-stream
+# scan_keywords/) and never appears in either repo's git history.
+#
+# This is a SAFETY NET, not the primary defense. The primary defense is
+# CLAUDE.md sanitization discipline before commits land.
+#
+# Source-of-truth design: ~/.gstack/projects/Lifetime-Ventures-edge-stream/
+#   kimura-oss-screening-blocker-design-20260429-095942.md
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'docs/**/*.md'
+      - 'prompts/**/*.md'
+      - 'prompts/**/*.txt'
+      - 'notion-templates/**/*.md'
+      - 'zapier-templates/**/*.md'
+      - 'zapier-templates/**/*.json'
+      - 'tools/*.py'
+      - 'tools/*.sh'
+      - 'README.md'
+      - 'CLAUDE.md'
+      - 'CONTRIBUTING.md'
+      - 'INSTALL.md'
+      - 'tools/scan_keywords/*.txt'
+      - '.github/workflows/oss-export-screening.yml'
+      - 'tools/oss_screening_scan.py'
+  pull_request:
+    paths:
+      - 'docs/**/*.md'
+      - 'prompts/**/*.md'
+      - 'prompts/**/*.txt'
+      - 'notion-templates/**/*.md'
+      - 'zapier-templates/**/*.md'
+      - 'zapier-templates/**/*.json'
+      - 'tools/*.py'
+      - 'tools/*.sh'
+      - 'README.md'
+      - 'CLAUDE.md'
+      - 'CONTRIBUTING.md'
+      - 'INSTALL.md'
+      - 'tools/scan_keywords/*.txt'
+      - '.github/workflows/oss-export-screening.yml'
+      - 'tools/oss_screening_scan.py'
+
+jobs:
+  oss-screening:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run OSS screening scan (edit mode)
+        # Edit mode for PR/push CI: portfolio + active_founders + sensitive_metrics.
+        # lifetime_team is skipped in edit mode (legitimate appearances in
+        # CONTRIBUTING.md / author bylines).
+        # Both org secrets are shared with edge-stream and are populated quarterly
+        # plus incident-driven. Empty secrets -> falls back to .txt files (placeholder
+        # in this repo) -> 0 substring entries -> regex layer (sensitive_metrics.txt)
+        # is the only active gate.
+        env:
+          LV_PORTFOLIO_COMPANIES: ${{ secrets.LV_PORTFOLIO_COMPANIES }}
+          LV_ACTIVE_FOUNDERS: ${{ secrets.LV_ACTIVE_FOUNDERS }}
+        run: python3 tools/oss_screening_scan.py --mode edit
