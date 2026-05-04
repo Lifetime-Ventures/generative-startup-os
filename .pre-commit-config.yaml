@@ -1,0 +1,49 @@
+# Pre-commit hooks for GSOS repository (opt-in)
+#
+# Setup:
+#   1. Install pre-commit framework: pip install pre-commit
+#   2. Install hooks: pre-commit install
+#
+# Once installed, hooks run automatically on `git commit`.
+# Hooks can be skipped (not recommended) with: git commit --no-verify
+#
+# Requirements: Python 3 must be on PATH as `python3` (Windows users on Git Bash:
+# verify with `which python3`; if only `python` is available, alias it or use a
+# wrapper). The hook entry below assumes `python3` resolves; failure will be
+# silent unless you run `pre-commit run --verbose --all-files` once after install.
+#
+# CI will catch any sanitization issues that slip through, but local
+# pre-commit hooks let you fix problems before push (avoiding force-push
+# rebase cycles).
+#
+# This config is opt-in: developers must run `pre-commit install` once
+# per clone. Not enforcing at git layer keeps the bar low for new contributors.
+#
+# The `files:` regex below MUST stay in sync with the path filters in
+# .github/workflows/oss-export-screening.yml — any addition there must be
+# mirrored here, or local pre-commit will skip files that CI scans.
+
+repos:
+  - repo: local
+    hooks:
+      - id: oss-screening-scan
+        name: OSS Export Screening Scan
+        description: Block commits containing deny-listed strings (LP / portfolio / founder names, sensitive metrics)
+        entry: python3 tools/oss_screening_scan.py --mode edit --quiet
+        language: system
+        pass_filenames: false
+        # Run only when scan-relevant files change. Mirrors workflow paths exactly.
+        files: |
+          (?x)^(
+            docs/.*\.md|
+            prompts/.*\.(md|txt)|
+            notion-templates/.*\.md|
+            zapier-templates/.*\.(md|json)|
+            tools/.*\.(py|sh)|
+            tools/scan_keywords/.*\.txt|
+            scripts/.*\.(sh|md)|
+            future-plan/.*\.(md|txt|yaml|yml|json|sh)|
+            future-plan/.*\.json\.example|
+            \.github/workflows/oss-export-screening\.yml|
+            (README|CLAUDE|CONTRIBUTING|INSTALL)\.md
+          )$

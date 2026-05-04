@@ -1,0 +1,76 @@
+{
+  "_blueprint_metadata": {
+    "name": "Voice Memo to GSOS Inbox",
+    "version": "1.0.0",
+    "gsos_version": "6.0",
+    "description": "Watches iCloud Voice Memos folder, transcribes with Whisper, summarizes with Claude, writes to Notion DB9 Inbox.",
+    "estimated_monthly_ops": 100,
+    "required_connections": ["icloud", "openai_or_anthropic_audio", "anthropic", "notion"],
+    "instructions": "Configure iCloud Drive watch on Voice Memos folder. For transcription, use OpenAI Whisper API or equivalent. Note: Apple does device-side transcription which is more private but harder to integrate."
+  },
+  "name": "GSOS: Voice Memo to Inbox",
+  "flow": [
+    {
+      "id": 1,
+      "module": "icloud:watchFiles",
+      "version": 1,
+      "parameters": {
+        "folder": "/Voice Memos",
+        "fileTypes": [".m4a", ".mp3", ".wav"]
+      }
+    },
+    {
+      "id": 2,
+      "module": "openai:transcribeAudio",
+      "version": 1,
+      "parameters": {
+        "model": "whisper-1",
+        "language": "ja",
+        "response_format": "text"
+      }
+    },
+    {
+      "id": 3,
+      "module": "anthropic:sendMessage",
+      "version": 1,
+      "parameters": {
+        "model": "claude-haiku-4-5",
+        "max_tokens": 500,
+        "system": "You are summarizing a founder's voice memo. Output JSON: {summary, category (Customer/Investor/Hiring/Partner/Mentor/Internal/Other), key_actions[], related_okrs[]}.",
+        "messages": [
+          {
+            "role": "user",
+            "content": "{{2.text}}"
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "module": "notion:createDatabaseItem",
+      "version": 1,
+      "parameters": {
+        "databaseId": "YOUR_DB9_INBOX_ID_HERE",
+        "properties": {
+          "Subject/Snippet": "Voice Memo: {{1.filename}}",
+          "Source": "VoiceMemo",
+          "Sender": "Self",
+          "Direct Mention": false,
+          "Category": "{{3.category}}",
+          "Received At": "{{1.createdAt}}",
+          "Status": "Unread",
+          "AI Summary": "{{3.summary}}",
+          "Body": "{{2.text}}"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "scenario": {
+      "scheduling": {
+        "type": "interval",
+        "interval": 30
+      }
+    }
+  }
+}

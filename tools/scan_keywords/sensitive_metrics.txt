@@ -76,3 +76,20 @@ OIST\s+\d+(\.\d+)?\s*%
 \bIC\s+\d+[-:]\d+
 \bIC\s+vote\s+\d+\s+of\s+\d+
 \b\d+\s+(dissent|dissents|abstain|abstains)\b
+
+# === 8. Webhook URLs and API token shapes ===
+# Added 2026-05-03 with future-plan/ infrastructure: automation-stack-options/
+# contains Make.com Blueprint JSON; if a contributor exports a real blueprint
+# the webhook URL is embedded. These patterns block the leak shape, not the
+# specific value — patterns themselves reveal nothing about which webhooks exist.
+#
+# Blocks: real Make.com / Zapier webhook URLs, GitHub PAT, Slack bot tokens, Anthropic API keys
+# Allows: placeholder examples like "YOUR_TOKEN_HERE" or "https://hook.example.com"
+hook\.[a-z0-9-]+\.make\.com/[a-zA-Z0-9]{16,}
+hooks\.zapier\.com/hooks/catch/\d+/[a-zA-Z0-9]+
+xoxb-\d{10,}-\d{10,}-[a-zA-Z0-9]{20,}
+xapp-\d-[A-Z0-9]{10,}-\d{10,}-[a-f0-9]{40,}
+ghp_[A-Za-z0-9]{36}
+github_pat_[A-Za-z0-9_]{80,}
+sk-ant-api\d+-[A-Za-z0-9_-]{80,}
+AKIA[0-9A-Z]{16}

@@ -31,6 +31,17 @@ on:
       - 'tools/scan_keywords/*.txt'
       - '.github/workflows/oss-export-screening.yml'
       - 'tools/oss_screening_scan.py'
+      # future-plan/ idea-stock content (added in PR introducing future-plan/)
+      - 'future-plan/**/*.md'
+      - 'future-plan/**/*.txt'
+      - 'future-plan/**/*.yaml'
+      - 'future-plan/**/*.yml'
+      - 'future-plan/**/*.json'
+      - 'future-plan/**/*.json.example'
+      - 'future-plan/**/*.sh'
+      # scripts/ operational helpers
+      - 'scripts/*.sh'
+      - 'scripts/*.md'
   pull_request:
     paths:
       - 'docs/**/*.md'
@@ -48,6 +59,17 @@ on:
       - 'tools/scan_keywords/*.txt'
       - '.github/workflows/oss-export-screening.yml'
       - 'tools/oss_screening_scan.py'
+      # future-plan/ idea-stock content
+      - 'future-plan/**/*.md'
+      - 'future-plan/**/*.txt'
+      - 'future-plan/**/*.yaml'
+      - 'future-plan/**/*.yml'
+      - 'future-plan/**/*.json'
+      - 'future-plan/**/*.json.example'
+      - 'future-plan/**/*.sh'
+      # scripts/ operational helpers
+      - 'scripts/*.sh'
+      - 'scripts/*.md'
 
 jobs:
   oss-screening:
