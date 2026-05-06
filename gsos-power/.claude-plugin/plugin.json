@@ -1,7 +1,7 @@
 {
   "name": "gsos-power",
-  "version": "1.0.0",
-  "description": "Code-only extras for GSOS. Hooks and local MCP servers; intended for Claude Code, not Cowork.",
+  "version": "1.0.1",
+  "description": "Power-user extras for GSOS. Adds /setup-mcp, a SessionStart hook, and a local Notion MCP server. Cowork lists these components in the Connectors tab; full execution (hook firing, MCP binary launch) is most reliable from Claude Code.",
   "author": {
     "name": "Lifetime Ventures",
     "url": "https://lifetime-ventures.com"

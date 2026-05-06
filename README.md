@@ -46,18 +46,27 @@ Realistic time: **10-15 minutes** for Path 1 (Cowork), **15-20 minutes** for Pat
 
 ### Path 1 — Cowork (recommended for primary users)
 
-> ⚠️ **v1.0 status:** the "Add from GitHub" UI flow described below has not yet been verified by Lifetime Ventures against current Claude Desktop. The Anthropic [official Cowork plugin docs](https://support.claude.com/en/articles/13837440-use-plugins-in-claude-cowork) currently document **"Browse plugins" + "upload a custom plugin file"** but do not explicitly document a "Add from GitHub" entry point. If your Cowork UI does not match the steps below, fall back to Path 2 (Code) and follow up with us via GitHub Issues so we can update the docs.
+> ✅ **Verified end-to-end on Claude Desktop, 2026-05-06** (Lifetime Ventures internal). Pro plan or higher required. The exact UI labels below are taken from the Japanese Claude Desktop locale; English labels are the same words in English (Customize, Plugins, Directory, Personal, Browse plugins).
 
 1. **Notion template duplicate** (30 sec) — *(Notion template URL will be added in the `claude/v0-notion-template` follow-up PR.)* Click the link, choose your private workspace, then "Duplicate".
-2. **Open Claude Desktop, switch to the Cowork tab** -> left sidebar **Customize -> Browse plugins** (1 min). If you see an "Add from GitHub" or similar entry point, paste `Lifetime-Ventures/generative-startup-os`. Otherwise, see the fallback note below.
-3. Click **Install** on `gsos`.
-4. The plugin's `userConfig` will prompt you to confirm Connectors are installed. Open Claude Desktop **Settings → Connectors** and add:
+2. **Open Claude Desktop and switch to the Cowork tab** (1 min).
+3. **Add the marketplace** (one-time, 30 sec):
+   - Left sidebar -> **Customize** -> **Plugins** (プラグイン).
+   - Click **Browse plugins** (プラグインを参照) to open the Directory modal.
+   - Switch to the **Personal** (個人用) tab at the top of the modal.
+   - Click the **+** button next to the empty "Add a marketplace" field, paste `Lifetime-Ventures/generative-startup-os`, and confirm. The marketplace tag appears in the personal tab.
+4. **Install the plugins** (10 sec):
+   - With `generative-startup-os` selected, you should see two plugin cards: **Gsos** and **Gsos power**.
+   - Click the **+** on **Gsos** to install it.
+   - (Optional) Click **+** on **Gsos power** if you want the power-user extras. Cowork lists its hooks and local MCP server alongside the Anthropic Connectors but the power-user workflows are most reliable from Claude Code.
+5. **Connectors** (2 min): the plugin's `userConfig` reminds you to confirm Connectors. Open Claude Desktop **Settings -> Connectors** and add:
    - Notion (Anthropic official)
    - Google Calendar (Anthropic official)
    - Circleback ([claude.com/connectors/circleback](https://claude.com/connectors/circleback))
-   Then check the box and submit.
-5. **Run `/gsos:okr-set`** in the Cowork tab (3-5 min) — drafts Mission, KRs, weekly commitments from your meetings; you yes/no each.
-6. **Done** (T+10-15 min) — Mission draft, OKR Quarter 3 KRs, Weekly Commitment 5-7 items, Today's Focus row 1 in Notion.
+
+   Then check the userConfig box and submit.
+6. **Run `/gsos:okr-set`** in the Cowork tab (3-5 min) — drafts Mission, KRs, weekly commitments from your meetings; you yes/no each.
+7. **Done** (T+10-15 min) — Mission draft, OKR Quarter 3 KRs, Weekly Commitment 5-7 items, Today's Focus row 1 in Notion.
 
 ### Path 2 — Claude Code (power users / contributors)
 
