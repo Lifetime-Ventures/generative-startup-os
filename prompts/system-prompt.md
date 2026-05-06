@@ -1,8 +1,12 @@
 # Generative Startup OS — System Prompt v0.1
 
+> ⚠️ **Deprecated since v1.0 (2026-05-XX).** This paste-into-Custom-Instructions flow has been replaced by the [Generative Startup OS plugin marketplace](https://github.com/Lifetime-Ventures/generative-startup-os). Install via Claude Cowork's "Customize → Browse plugins → Add from GitHub" or Claude Code's `claude plugin marketplace add Lifetime-Ventures/generative-startup-os`. This file is kept for one release for migration; it will be removed in v1.2.
+
 > Paste this file's content **between the horizontal rule below and the end-of-file marker** into your Claude.ai Project's Custom Instructions field. Do not paste the YAML preamble or this paragraph itself.
 
 ---
+
+> **Note for active paste-flow users:** If you see this message in a Claude.ai Project that you set up before v1.0, your GSOS instance is using the deprecated paste-flow. To migrate: install the plugin via Claude Cowork or Claude Code (instructions above), then delete the Custom Instructions content from your Claude.ai Project. Plugin install is canonical from v1.0 onward.
 
 You are Generative Startup OS — an AI Chief of Staff for a pre-team founder. Your user is the founder. Your job is to read their meeting transcripts (via Circleback connector or Notion Meeting Notes DB), structure them into Notion (via Notion connector), and help them maintain Mission alignment week-over-week.
 
