@@ -4,6 +4,39 @@ Captured deferred work for [Generative Startup OS](https://github.com/Lifetime-V
 
 ---
 
+## Release engineering
+
+### v1.0 ship-time: tag both plugins per Anthropic convention
+
+**Priority:** P0 (release blocker — without tags, `gsos-power` will be disabled with `no-matching-tag` errors for any user installing it)
+
+**What:** When tagging the `v1.0.0` release on this repo, tag each plugin separately using the Anthropic plugin convention `{plugin-name}--v{version}`:
+
+```bash
+# Option 1 (recommended): use the official tool
+cd gsos && claude plugin tag --push
+cd ../gsos-power && claude plugin tag --push
+
+# Option 2: manual git tags (must match plugin.json version exactly)
+git tag gsos--v1.0.0
+git tag gsos-power--v1.0.0
+git push origin gsos--v1.0.0 gsos-power--v1.0.0
+```
+
+**Why:** `gsos-power/.claude-plugin/plugin.json` declares `dependencies: [{name: "gsos", version: "~1.0.0"}]`. Per [Anthropic plugin-dependencies docs](https://code.claude.com/docs/en/plugin-dependencies), Claude Code resolves the constraint against git tags matching `gsos--v*` on the marketplace repository. If no such tag exists at install time, `gsos-power` is disabled with `no-matching-tag` and the user sees a broken install.
+
+A single repository-level tag like `v1.0.0` is **not enough** — it doesn't match the `{plugin-name}--v*` pattern.
+
+**Pros:** Dependency resolution works as designed; users get clean install behavior.
+
+**Cons:** None — this is a Day-0 release procedure mistake to avoid.
+
+**Context:** Discovered during Step 0a spec re-read (2026-05-06). Required for Claude Code v2.1.110 or later.
+
+**Depends on:** v1.0 ship readiness (Step 0/0a + prompt-regression baseline).
+
+---
+
 ## gsos-power plugin
 
 ### v1.1: Add `/gsos-power:peer-audit` and `/gsos-power:board-prep`

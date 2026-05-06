@@ -14,7 +14,7 @@
     "connectors_setup": {
       "type": "boolean",
       "title": "Connectors installed?",
-      "description": "Before using GSOS, install these Anthropic Connectors via Claude Desktop Settings → Connectors:\n• Notion (Anthropic official)\n• Google Calendar (Anthropic official)\n• Circleback (https://claude.com/connectors/circleback)\n\nGSOS will abort with a 1-click recovery URL if any connector is missing. Check this box once all three are connected.",
+      "description": "Before using GSOS, install these Anthropic Connectors via Claude Desktop Settings -> Connectors:\n- Notion (Anthropic official)\n- Google Calendar (Anthropic official)\n- Circleback (https://claude.com/connectors/circleback)\n\nGSOS will abort with a 1-click recovery URL if any connector is missing. Check this box once all three are connected.",
       "required": true
     }
   }

@@ -46,9 +46,11 @@ Realistic time: **10-15 minutes** for Path 1 (Cowork), **15-20 minutes** for Pat
 
 ### Path 1 — Cowork (recommended for primary users)
 
+> ⚠️ **v1.0 status:** the "Add from GitHub" UI flow described below has not yet been verified by Lifetime Ventures against current Claude Desktop. The Anthropic [official Cowork plugin docs](https://support.claude.com/en/articles/13837440-use-plugins-in-claude-cowork) currently document **"Browse plugins" + "upload a custom plugin file"** but do not explicitly document a "Add from GitHub" entry point. If your Cowork UI does not match the steps below, fall back to Path 2 (Code) and follow up with us via GitHub Issues so we can update the docs.
+
 1. **Notion template duplicate** (30 sec) — *(Notion template URL will be added in the `claude/v0-notion-template` follow-up PR.)* Click the link, choose your private workspace, then "Duplicate".
-2. **Open Claude Desktop → Cowork tab** → left sidebar **Customize → Browse plugins → Add from GitHub** (1 min)
-3. Paste `Lifetime-Ventures/generative-startup-os` and click **Install** on `gsos`.
+2. **Open Claude Desktop, switch to the Cowork tab** -> left sidebar **Customize -> Browse plugins** (1 min). If you see an "Add from GitHub" or similar entry point, paste `Lifetime-Ventures/generative-startup-os`. Otherwise, see the fallback note below.
+3. Click **Install** on `gsos`.
 4. The plugin's `userConfig` will prompt you to confirm Connectors are installed. Open Claude Desktop **Settings → Connectors** and add:
    - Notion (Anthropic official)
    - Google Calendar (Anthropic official)

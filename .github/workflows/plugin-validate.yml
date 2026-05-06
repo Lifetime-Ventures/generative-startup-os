@@ -26,7 +26,7 @@ jobs:
         run: |
           python3 -c "
           import json, sys
-          with open('.claude-plugin/marketplace.json') as f:
+          with open('.claude-plugin/marketplace.json', encoding='utf-8') as f:
               data = json.load(f)
           # Required fields per https://code.claude.com/docs/en/plugin-marketplaces
           assert 'name' in data, 'marketplace.json missing required field: name'
@@ -41,12 +41,11 @@ jobs:
       - name: Validate gsos/.claude-plugin/plugin.json
         run: |
           python3 -c "
-          import json, sys
-          with open('gsos/.claude-plugin/plugin.json') as f:
+          import json, sys, re
+          with open('gsos/.claude-plugin/plugin.json', encoding='utf-8') as f:
               data = json.load(f)
           # Per https://code.claude.com/docs/en/plugins-reference, name is the only required field
           assert 'name' in data, 'plugin.json missing required field: name'
-          import re
           assert re.match(r'^[a-z0-9-]+$', data['name']), 'name must be kebab-case'
           print('gsos/plugin.json: OK')
           "
@@ -55,7 +54,7 @@ jobs:
         run: |
           python3 -c "
           import json, sys
-          with open('gsos-power/.claude-plugin/plugin.json') as f:
+          with open('gsos-power/.claude-plugin/plugin.json', encoding='utf-8') as f:
               data = json.load(f)
           assert 'name' in data, 'plugin.json missing required field: name'
           # gsos-power declares a dependency on gsos
@@ -70,7 +69,7 @@ jobs:
         run: |
           python3 -c "
           import json
-          with open('gsos-power/hooks/hooks.json') as f:
+          with open('gsos-power/hooks/hooks.json', encoding='utf-8') as f:
               data = json.load(f)
           assert 'hooks' in data, 'hooks.json must have top-level \"hooks\" key'
           print('hooks.json: OK')
@@ -80,7 +79,7 @@ jobs:
         run: |
           python3 -c "
           import json
-          with open('gsos-power/.mcp.json') as f:
+          with open('gsos-power/.mcp.json', encoding='utf-8') as f:
               data = json.load(f)
           assert 'mcpServers' in data, '.mcp.json must have top-level \"mcpServers\" key'
           print('.mcp.json: OK')
