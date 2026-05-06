@@ -35,48 +35,81 @@ Founders aren't missing OKRs. They're missing structure on the OKRs they're alre
 
 ## Quickstart
 
-Realistic time: **15-25 minutes** for Path 1 (Circleback), **25-40 minutes** for Path 2 (Granola via Zapier).
+Realistic time: **10-15 minutes** for Path 1 (Cowork), **15-20 minutes** for Path 2 (Code), **25-40 minutes** for Path 3 (Granola via Zapier).
 
 ### Prerequisites
 
-- [ ] Claude.ai Pro subscription
+- [ ] Claude.ai paid plan (Pro / Max / Team / Enterprise — Cowork plugin marketplace requires a paid plan)
 - [ ] A Notion workspace **only you can access** (private workspace recommended; shared workspaces expose your investor updates and decisions to coworkers)
-- [ ] Circleback account with at least 1 week of recorded meetings (or Granola if using Path 2)
+- [ ] Circleback account with at least 1 week of recorded meetings (or Granola if using Path 3)
 - [ ] Google Workspace account (Gmail + Calendar)
 
-### Path 1 — Circleback (recommended)
+### Path 1 — Cowork (recommended for primary users)
 
-1. **Notion template duplicate** (30 sec) — *(Notion template URL will be added in the `claude/v0-notion-template` follow-up PR.)* Once published, click the link, choose your private workspace, then "Duplicate".
-2. **Claude.ai new Project** (1 min) — create new Project, paste `prompts/system-prompt.md` content into Custom Instructions
-3. **Connectors OAuth × 3** (2 min) — in Claude.ai Settings → Connectors:
+> ⚠️ **v1.0 status:** the "Add from GitHub" UI flow described below has not yet been verified by Lifetime Ventures against current Claude Desktop. The Anthropic [official Cowork plugin docs](https://support.claude.com/en/articles/13837440-use-plugins-in-claude-cowork) currently document **"Browse plugins" + "upload a custom plugin file"** but do not explicitly document a "Add from GitHub" entry point. If your Cowork UI does not match the steps below, fall back to Path 2 (Code) and follow up with us via GitHub Issues so we can update the docs.
+
+1. **Notion template duplicate** (30 sec) — *(Notion template URL will be added in the `claude/v0-notion-template` follow-up PR.)* Click the link, choose your private workspace, then "Duplicate".
+2. **Open Claude Desktop, switch to the Cowork tab** -> left sidebar **Customize -> Browse plugins** (1 min). If you see an "Add from GitHub" or similar entry point, paste `Lifetime-Ventures/generative-startup-os`. Otherwise, see the fallback note below.
+3. Click **Install** on `gsos`.
+4. The plugin's `userConfig` will prompt you to confirm Connectors are installed. Open Claude Desktop **Settings → Connectors** and add:
    - Notion (Anthropic official)
    - Google Calendar (Anthropic official)
    - Circleback ([claude.com/connectors/circleback](https://claude.com/connectors/circleback))
-4. **Run `/okr-set`** in Chat (3-5 min) — answers Mission 5 questions, yes/nos KR drafts and weekly commitments
-5. **Done** (T+15-25 min) — Mission draft, OKR Quarter 3 KRs, Weekly Commitment 5-7 items, Today's Focus row 1 in Notion
+   Then check the box and submit.
+5. **Run `/gsos:okr-set`** in the Cowork tab (3-5 min) — drafts Mission, KRs, weekly commitments from your meetings; you yes/no each.
+6. **Done** (T+10-15 min) — Mission draft, OKR Quarter 3 KRs, Weekly Commitment 5-7 items, Today's Focus row 1 in Notion.
 
-### Path 2 — Granola via Zapier (only if you already pay for Zapier)
+### Path 2 — Claude Code (power users / contributors)
 
-Same as Path 1, but step 3 swaps Circleback connector for a Zapier setup:
+```bash
+# 1. Add the marketplace
+claude plugin marketplace add Lifetime-Ventures/generative-startup-os
+# 2. Install the base plugin
+claude plugin install gsos@generative-startup-os
+# 3. (Optional) Install the Code-only extras (local Notion MCP, hooks)
+claude plugin install gsos-power@generative-startup-os
+/gsos-power:setup-mcp
+# 4. Run the same skills
+/gsos:okr-set
+```
+
+Connectors (Notion / Google Calendar / Circleback) are configured the same way as Path 1 — via Claude Desktop **Settings → Connectors**. Code reads them through the same Anthropic-cloud-mediated path.
+
+### Path 3 — Granola via Zapier (only if you already pay for Zapier)
+
+Same as Path 1, but step 4 swaps Circleback Connector for a Zapier setup:
 - Zapier "Note Added to Granola Folder" trigger (folder: "GS-OS sync")
 - Zapier "Create Notion Database Item" action (target: Meeting Notes DB)
-- Add Notion + Google Calendar connectors (skip Circleback)
+- Add Notion + Google Calendar Connectors (skip Circleback)
 
 Cost note: Granola Basic (free) + Zapier paid ($20/mo) ≈ Circleback direct ($20/mo). If you don't already pay for Zapier, Path 1 is cleaner.
+
+### Migrating from the old paste-flow (pre-v1.0)
+
+If you set up GSOS before v1.0 by pasting `prompts/system-prompt.md` into a Claude.ai Project's Custom Instructions, that flow is now deprecated. To migrate:
+
+1. Install `gsos` via Path 1 (Cowork) or Path 2 (Code) above.
+2. Verify `/gsos:okr-set` runs and writes to your existing Notion workspace (Notion DB schema is unchanged from v0).
+3. Delete the Custom Instructions content from your old Claude.ai Project. The plugin is now canonical.
+
+`prompts/system-prompt.md` is kept in this repo for one release and will be removed in v1.2.
 
 ---
 
 ## Skills (Phase 1)
 
-| Skill | When | What it does |
-|---|---|---|
-| `/okr-set` | Initial setup, quarterly | Reads 30 days of meetings, drafts Mission + 3 KRs + 5-7 weekly commitments, founder yes/nos |
-| `/sync-all` | Each morning | Imports new meetings, AI-extracts actions, dedupe-checks against open commitments, founder yes/nos |
-| `/today` | Each morning | Picks 1-3 of this week's commitments based on KR priority, due, recent activity |
-| `/weekly-roast` | Friday afternoon | Aggregates the week, identifies drift from Mission, drafts next week's 5 commitments |
-| `/investor-update` | Month start | Compiles done commitments + decisions into a Google Doc draft for investor outreach |
+Commands are namespaced by plugin (Anthropic Cowork/Code convention): `/<plugin>:<command>`. The 5 base commands ship in the `gsos` plugin; the optional `gsos-power` plugin (Code only) adds `/gsos-power:setup-mcp` and reserves `/gsos-power:peer-audit` and `/gsos-power:board-prep` for v1.1.
 
-`/sync-all` is **founder-triggered**, not automated. Calendar reminders prompt you to type the command; the AI does not run on a schedule on your behalf. We chose this over hosting servers and credentials. If you need true automation, that's on the Phase 2 backlog.
+| Command | When | What it does |
+|---|---|---|
+| `/gsos:okr-set` | Initial setup, quarterly | Reads 30 days of meetings, drafts Mission + 3 KRs + 5-7 weekly commitments, founder yes/nos |
+| `/gsos:sync-all` | Each morning | Imports new meetings, AI-extracts actions, dedupe-checks against open commitments, founder yes/nos |
+| `/gsos:today` | Each morning | Picks 1-3 of this week's commitments based on KR priority, due, recent activity |
+| `/gsos:weekly-roast` | Friday afternoon | Aggregates the week, identifies drift from Mission, drafts next week's 5 commitments |
+| `/gsos:investor-update` | Month start | Compiles done commitments + decisions into a Google Doc draft for investor outreach |
+| `/gsos-power:setup-mcp` | Once at install (Code only) | Installs the Notion local MCP server and configures Claude Code to use it |
+
+`/gsos:sync-all` is **founder-triggered**, not automated. Calendar reminders prompt you to type the command; the AI does not run on a schedule on your behalf. We chose this over hosting servers and credentials. If you need true automation, that is on the Phase 2 backlog.
 
 ---
 

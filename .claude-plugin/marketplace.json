@@ -1,0 +1,23 @@
+{
+  "name": "generative-startup-os",
+  "owner": {
+    "name": "Lifetime Ventures",
+    "url": "https://lifetime-ventures.com"
+  },
+  "plugins": [
+    {
+      "name": "gsos",
+      "source": "./gsos",
+      "version": "1.0.0",
+      "description": "AI Chief of Staff for pre-team founders. Convert your meetings into structured OKRs, weekly commitments, and monthly investor updates.",
+      "category": "founder-os"
+    },
+    {
+      "name": "gsos-power",
+      "source": "./gsos-power",
+      "version": "1.0.0",
+      "description": "Power-user extras for GSOS (Claude Code recommended). Adds MCP setup automation. Hooks and local MCP servers do not activate in Cowork.",
+      "category": "founder-os"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+name: Plugin manifest validation
+
+on:
+  pull_request:
+    paths:
+      - '.claude-plugin/**'
+      - 'gsos/**'
+      - 'gsos-power/**'
+      - '.github/workflows/plugin-validate.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - '.claude-plugin/**'
+      - 'gsos/**'
+      - 'gsos-power/**'
+
+jobs:
+  validate-manifests:
+    name: Validate marketplace.json + plugin.json
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate marketplace.json is parseable JSON
+        run: |
+          python3 -c "
+          import json, sys
+          with open('.claude-plugin/marketplace.json', encoding='utf-8') as f:
+              data = json.load(f)
+          # Required fields per https://code.claude.com/docs/en/plugin-marketplaces
+          assert 'name' in data, 'marketplace.json missing required field: name'
+          assert 'plugins' in data, 'marketplace.json missing required field: plugins'
+          assert isinstance(data['plugins'], list), 'plugins must be an array'
+          for p in data['plugins']:
+              assert 'name' in p, f'plugin entry missing name: {p}'
+              assert 'source' in p, f'plugin entry missing source: {p}'
+          print('marketplace.json: OK')
+          "
+
+      - name: Validate gsos/.claude-plugin/plugin.json
+        run: |
+          python3 -c "
+          import json, sys, re
+          with open('gsos/.claude-plugin/plugin.json', encoding='utf-8') as f:
+              data = json.load(f)
+          # Per https://code.claude.com/docs/en/plugins-reference, name is the only required field
+          assert 'name' in data, 'plugin.json missing required field: name'
+          assert re.match(r'^[a-z0-9-]+$', data['name']), 'name must be kebab-case'
+          print('gsos/plugin.json: OK')
+          "
+
+      - name: Validate gsos-power/.claude-plugin/plugin.json
+        run: |
+          python3 -c "
+          import json, sys
+          with open('gsos-power/.claude-plugin/plugin.json', encoding='utf-8') as f:
+              data = json.load(f)
+          assert 'name' in data, 'plugin.json missing required field: name'
+          # gsos-power declares a dependency on gsos
+          if 'dependencies' in data:
+              for dep in data['dependencies']:
+                  if isinstance(dep, dict):
+                      assert 'name' in dep, f'dependency missing name: {dep}'
+          print('gsos-power/plugin.json: OK')
+          "
+
+      - name: Validate hooks.json
+        run: |
+          python3 -c "
+          import json
+          with open('gsos-power/hooks/hooks.json', encoding='utf-8') as f:
+              data = json.load(f)
+          assert 'hooks' in data, 'hooks.json must have top-level \"hooks\" key'
+          print('hooks.json: OK')
+          "
+
+      - name: Validate .mcp.json
+        run: |
+          python3 -c "
+          import json
+          with open('gsos-power/.mcp.json', encoding='utf-8') as f:
+              data = json.load(f)
+          assert 'mcpServers' in data, '.mcp.json must have top-level \"mcpServers\" key'
+          print('.mcp.json: OK')
+          "
+
+      - name: Verify SKILL.md files have frontmatter
+        run: |
+          for skill in gsos/skills/*/SKILL.md; do
+            if ! head -1 "$skill" | grep -q '^---$'; then
+              echo "ERROR: $skill missing frontmatter delimiter"
+              exit 1
+            fi
+            if ! grep -q '^name:' "$skill"; then
+              echo "ERROR: $skill missing 'name:' frontmatter field"
+              exit 1
+            fi
+          done
+          echo "All SKILL.md files have valid frontmatter"
+
+      - name: Verify command files have frontmatter
+        run: |
+          for cmd in gsos/commands/*.md gsos-power/commands/*.md; do
+            if ! head -1 "$cmd" | grep -q '^---$'; then
+              echo "ERROR: $cmd missing frontmatter delimiter"
+              exit 1
+            fi
+            if ! grep -q '^name:' "$cmd"; then
+              echo "ERROR: $cmd missing 'name:' frontmatter field"
+              exit 1
+            fi
+          done
+          echo "All command files have valid frontmatter"

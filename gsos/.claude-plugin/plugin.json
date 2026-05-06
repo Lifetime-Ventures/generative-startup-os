@@ -1,0 +1,21 @@
+{
+  "name": "gsos",
+  "version": "1.0.0",
+  "description": "AI Chief of Staff for pre-team founders. Convert your meetings into structured OKRs, weekly commitments, and monthly investor updates.",
+  "author": {
+    "name": "Lifetime Ventures",
+    "url": "https://lifetime-ventures.com"
+  },
+  "homepage": "https://github.com/Lifetime-Ventures/generative-startup-os",
+  "repository": "https://github.com/Lifetime-Ventures/generative-startup-os",
+  "license": "MIT",
+  "keywords": ["founder", "okr", "investor-update", "notion", "circleback", "chief-of-staff"],
+  "userConfig": {
+    "connectors_setup": {
+      "type": "boolean",
+      "title": "Connectors installed?",
+      "description": "Before using GSOS, install these Anthropic Connectors via Claude Desktop Settings -> Connectors:\n- Notion (Anthropic official)\n- Google Calendar (Anthropic official)\n- Circleback (https://claude.com/connectors/circleback)\n\nGSOS will abort with a 1-click recovery URL if any connector is missing. Check this box once all three are connected.",
+      "required": true
+    }
+  }
+}
