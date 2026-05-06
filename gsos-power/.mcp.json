@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "notion-local": {
+      "command": "${CLAUDE_PLUGIN_DATA}/notion-mcp/bin/notion-mcp",
+      "args": ["--config", "${CLAUDE_PLUGIN_ROOT}/.mcp-notion-config.json"],
+      "env": {
+        "NOTION_LOCAL_DATA_DIR": "${CLAUDE_PLUGIN_DATA}/notion-mcp/data"
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "gsos-power",
+  "version": "1.0.0",
+  "description": "Code-only extras for GSOS. Hooks and local MCP servers; intended for Claude Code, not Cowork.",
+  "author": {
+    "name": "Lifetime Ventures",
+    "url": "https://lifetime-ventures.com"
+  },
+  "homepage": "https://github.com/Lifetime-Ventures/generative-startup-os",
+  "repository": "https://github.com/Lifetime-Ventures/generative-startup-os",
+  "license": "MIT",
+  "keywords": ["founder", "okr", "claude-code", "mcp", "developer-tools"],
+  "dependencies": [
+    { "name": "gsos", "version": "~1.0.0" }
+  ],
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./.mcp.json"
+}
