@@ -4,39 +4,6 @@ Captured deferred work for [Generative Startup OS](https://github.com/Lifetime-V
 
 ---
 
-## Release engineering
-
-### v1.0 ship-time: tag both plugins per Anthropic convention
-
-**Priority:** P0 (release blocker — without tags, `gsos-power` will be disabled with `no-matching-tag` errors for any user installing it)
-
-**What:** When tagging the `v1.0.0` release on this repo, tag each plugin separately using the Anthropic plugin convention `{plugin-name}--v{version}`:
-
-```bash
-# Option 1 (recommended): use the official tool
-cd gsos && claude plugin tag --push
-cd ../gsos-power && claude plugin tag --push
-
-# Option 2: manual git tags (must match plugin.json version exactly)
-git tag gsos--v1.0.0
-git tag gsos-power--v1.0.0
-git push origin gsos--v1.0.0 gsos-power--v1.0.0
-```
-
-**Why:** `gsos-power/.claude-plugin/plugin.json` declares `dependencies: [{name: "gsos", version: "~1.0.0"}]`. Per [Anthropic plugin-dependencies docs](https://code.claude.com/docs/en/plugin-dependencies), Claude Code resolves the constraint against git tags matching `gsos--v*` on the marketplace repository. If no such tag exists at install time, `gsos-power` is disabled with `no-matching-tag` and the user sees a broken install.
-
-A single repository-level tag like `v1.0.0` is **not enough** — it doesn't match the `{plugin-name}--v*` pattern.
-
-**Pros:** Dependency resolution works as designed; users get clean install behavior.
-
-**Cons:** None — this is a Day-0 release procedure mistake to avoid.
-
-**Context:** Discovered during Step 0a spec re-read (2026-05-06). Required for Claude Code v2.1.110 or later.
-
-**Depends on:** v1.0 ship readiness (Step 0/0a + prompt-regression baseline).
-
----
-
 ## gsos-power plugin
 
 ### v1.1: Add `/gsos-power:peer-audit` and `/gsos-power:board-prep`
@@ -97,6 +64,52 @@ A single repository-level tag like `v1.0.0` is **not enough** — it doesn't mat
 
 ---
 
+## gsos plugin
+
+### v1.1: hide reference SKILL.md from the user-facing slash menu
+
+**Priority:** P3
+
+**What:** When `gsos` is installed in Cowork, all 10 components (5 SKILL.md + 5 commands.md) appear as `/`-invocable entries in the Cowork directory and slash menu, including reference-only skills like `/core-operating-principles`, `/error-rescue-map`, `/notion-data-model`, `/tone-and-style`, `/transcript-handling`. Founders see 10 commands but only 5 are user-meaningful — the other 5 are LLM reference materials linked from `CLAUDE.md`.
+
+**Why:** Discovered during Step 0 manual verification on 2026-05-06 (screenshot in PR #13 closing comments). The 5 reference skills should be Claude-invocable in context but not surfaced as slash commands the founder picks from a menu.
+
+**Pros:** Cleaner founder UX — `/gsos:okr-set` and the 4 sister commands are obviously the intended entry points; no decision paralysis from reference skills.
+
+**Cons:** Need to confirm the right plugin manifest mechanism. Options include adding `disable-model-invocation: true` (commands convention) to SKILL.md frontmatter, moving the reference content into the `agents/` tree with its own visibility rules, or restructuring as bare markdown files referenced from the 5 commands without being indexed.
+
+**Context:** Discovered post-ship; not a v1.0 blocker. The 5 commands work end-to-end; reference skills are functionally inert (no harm if invoked, just extra menu noise).
+
+**Depends on:** Spec confirmation around SKILL.md frontmatter visibility flags.
+
+---
+
+### Post-v1.0.1: push gsos-power--v1.0.1 tag after merge
+
+**Priority:** P0 (release-engineering, every gsos-power version bump)
+
+**What:** After this v1.0.1 follow-up PR merges, push the matching git tag so the dependency resolution still works:
+
+```bash
+cd gsos-power && claude plugin tag --push
+# or manually:
+git tag gsos-power--v1.0.1 && git push origin gsos-power--v1.0.1
+```
+
+**Why:** Same reason as the v1.0.0 tag push at ship — without `gsos-power--v1.0.1`, anyone installing `gsos-power` after this PR merges would resolve to v1.0.0 (the prior tag). They would not see the corrected description nor the version-aligned manifest.
+
+**Pros:** Dependency resolution stays accurate.
+
+**Cons:** None — this is the release procedure for every version bump.
+
+**Context:** Established in v1.0 ship (TODOS "v1.0 ship-time" item, now Completed). This is the standing procedure for every subsequent version bump on either plugin.
+
+---
+
 ## Completed
 
-(empty — v1.0 ship pending Step 0/0a verification)
+### v1.0 ship-time: tag both plugins per Anthropic convention
+
+**Completed:** v1.0.0 (2026-05-06)
+
+Pushed `gsos--v1.0.0` (a6d007d) and `gsos-power--v1.0.0` (d545a49) to origin via `claude plugin tag --push`. Step 0 manual verification on 2026-05-06 confirmed both plugins install cleanly in Cowork via the Add-from-GitHub flow under the Personal (個人用) tab; the `/gsos:okr-set` pre-flight runs as designed.
