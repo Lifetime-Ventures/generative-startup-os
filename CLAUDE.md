@@ -117,4 +117,4 @@ The `future-plan/` directory is **non-authoritative**. It holds curated idea-sto
 ---
 
 *Generative Startup OS — v0.1.0, 2026-05-02 (foundation reset)*
-*Designed by Lifetime Ventures. MIT licensed.*
+*Designed by Lifetime Ventures. Apache-2.0 licensed.*

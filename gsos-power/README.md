@@ -40,4 +40,4 @@ The plugin declares `dependencies: [{name: "gsos", version: "~1.0.0"}]` in `.cla
 
 ## License
 
-MIT — see [../LICENSE](../LICENSE).
+Apache License 2.0 — see [../LICENSE](../LICENSE) and [../NOTICE](../NOTICE).
