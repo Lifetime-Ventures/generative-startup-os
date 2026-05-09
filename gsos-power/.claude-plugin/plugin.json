@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/Lifetime-Ventures/generative-startup-os",
   "repository": "https://github.com/Lifetime-Ventures/generative-startup-os",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "keywords": ["founder", "okr", "claude-code", "mcp", "developer-tools"],
   "dependencies": [
     { "name": "gsos", "version": "~1.0.0" }
