@@ -106,6 +106,26 @@ git tag gsos-power--v1.0.1 && git push origin gsos-power--v1.0.1
 
 ---
 
+## Repository operations
+
+### v1.1: Inbound license-compat check in OSS screening
+
+**Priority:** P3
+
+**What:** Add a lightweight check (regex layer in `tools/oss_screening_scan.py` or a sibling script) that flags incoming PRs containing GPL / AGPL / CC-BY-NC / SSPL license markers in newly-added files. Apache-2.0 outbound license is incompatible with GPL family for incorporation.
+
+**Why:** Discovered during 2026-05-10 license migration eng review (`claude/license-migration-apache2`). Current OSS screening focuses on data tier (Tier 0-3) sanitization, not license posture. After Apache-2.0 migration, accidentally incorporating GPL-licensed code from a contributor PR would put the entire repo's license clarity at risk. Apache-2.0's patent grant (§3) only flows clean if all incorporated code is Apache-2.0-compatible.
+
+**Pros:** Long-term protection of Apache-2.0 license clean room; catches contributor mistakes early; lightweight (regex on diff, not full file scan); reuses the existing `INCLUDE_GLOBS` + `EXCLUDE_SUBSTRINGS` infrastructure pattern in `oss_screening_scan.py`.
+
+**Cons:** False positives possible (e.g., quoting GPL FAQ in docs); requires deny-list maintenance; not strictly necessary while contributor pool is small and PRs are human-reviewed.
+
+**Context:** The OSS screening pattern is established (see existing `tools/oss_screening_scan.py:74` INCLUDE_GLOBS and `tools/scan_keywords/sensitive_metrics.txt`). License marker detection would be a sibling regex layer that scans incoming PR diffs for strings like `GNU General Public License`, `Affero General Public License`, `CC BY-NC`, `Server Side Public License`. Recommended scope: `--mode pr-license-check` flag added to `oss_screening_scan.py`, fired by a new CI step in `oss-export-screening.yml` only on `pull_request` events.
+
+**Depends on:** v1.0 hearing batch settled (≥3 of 5 founders in 4 weeks); not a v1.0.x blocker. Reasonable to bundle with the v1.1 sub-agent extraction work (TODOS.md "v1.1: Sub-agent extraction for `gsos`") as that PR will already be touching contributor-facing infrastructure.
+
+---
+
 ## Completed
 
 ### v1.0 ship-time: tag both plugins per Anthropic convention
