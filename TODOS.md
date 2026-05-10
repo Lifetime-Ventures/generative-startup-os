@@ -66,6 +66,53 @@ Captured deferred work for [Generative Startup OS](https://github.com/Lifetime-V
 
 ## gsos plugin
 
+### v1.1: Restore `/migrate` skill for schema upgrades (HIGH-2 from regression-diff)
+
+**Priority:** P1
+
+**What:** Restore `gsos/commands/migrate.md` based on the v0 `prompts/system-prompt.md` lines 245-270 logic. Skill responsibilities:
+
+- Read `schema_version` from Mission page metadata (default to `1` if absent).
+- Compare to the schema version this skill knows about.
+- Branch: at-current ("Already on v{N}"), older (apply migrations sequentially), newer ("update Custom Instructions / re-install plugin").
+- Maintain a migration step registry (inline in the file or a sibling `gsos/skills/migrations/` directory).
+- On error mid-migration: do not proceed to next step, save error details to Mission page metadata.
+
+**Why:** v0 had `/migrate` as the canonical pathway for Phase 2 schema upgrades (e.g., v1 → v2). v1.0.x dropped it during the skill split (silent regression flagged in `tools/test/eval/regression-diff-2026-05-09.md` HIGH-2). Without `/migrate`, founders with a future v2 schema must manually re-duplicate the Notion template — breaking the "the OS handles its own upgrades" promise.
+
+**Pros:** Forward-compatibility restored. Migration step registry placeholder lets v2 contributors know where to add v1 → v2 migration logic when v2 schema is designed.
+
+**Cons:** v1 → v2 migration logic itself is unwritten (Phase 2 work), so this skill ships as scaffold + registry only. Slightly awkward to ship a skill with no actual migrations to run, but the v0 had the same shape ("There are no migrations to apply yet").
+
+**Context:** `tools/test/eval/regression-diff-2026-05-09.md` HIGH-2. v0 `prompts/system-prompt.md` lines 245-270 are the canonical reference; copy that logic verbatim and namespace as `/gsos:migrate`.
+
+**Depends on:** Nothing — can ship anytime after v1.0.3.
+
+---
+
+### v1.1: Pre-empt notion-data-model dangling link before v1.2 paste-flow deletion (HIGH-5)
+
+**Priority:** P1 (time-bound — must land before v1.2 deletes `prompts/system-prompt.md`)
+
+**What:** `gsos/skills/notion-data-model/SKILL.md` line 6 currently links to `prompts/system-prompt.md` for the full DB schema reference. v1.2 is scheduled to delete `prompts/system-prompt.md`. Before that deletion, copy the runtime-relevant content (DB column lists + connector method names) from system-prompt.md "Architecture you operate against" section (lines 21-40) into either:
+
+- (a) `gsos/skills/notion-data-model/reference.md` (mirrors the `error-rescue-map/reference.md` migration pattern), then update the SKILL.md link to point to the local `reference.md`; or
+- (b) inline the schema directly into `notion-data-model/SKILL.md` itself.
+
+Recommend (a) for parity with the existing `error-rescue-map` pattern.
+
+**Why:** When v1.2 deletes `prompts/system-prompt.md`, the SKILL.md link 404s for any LLM trying to follow it. The full inline DB schema is then only in `notion-templates/README.md` which is template/setup-focused, not skill-runtime-focused. The schema-validation and connector-call paths lose their authoritative reference.
+
+**Pros:** Zero churn for skill behavior. Pure docs migration. Follows established pattern (error-rescue-map already does this).
+
+**Cons:** None — purely a copy + relink operation.
+
+**Context:** `tools/test/eval/regression-diff-2026-05-09.md` HIGH-5. Establish before `prompts/system-prompt.md` removal in v1.2.
+
+**Depends on:** Nothing — can ship anytime in v1.1.
+
+---
+
 ### v1.1: hide reference SKILL.md from the user-facing slash menu
 
 **Priority:** P3
@@ -81,28 +128,6 @@ Captured deferred work for [Generative Startup OS](https://github.com/Lifetime-V
 **Context:** Discovered post-ship; not a v1.0 blocker. The 5 commands work end-to-end; reference skills are functionally inert (no harm if invoked, just extra menu noise).
 
 **Depends on:** Spec confirmation around SKILL.md frontmatter visibility flags.
-
----
-
-### Post-v1.0.1: push gsos-power--v1.0.1 tag after merge
-
-**Priority:** P0 (release-engineering, every gsos-power version bump)
-
-**What:** After this v1.0.1 follow-up PR merges, push the matching git tag so the dependency resolution still works:
-
-```bash
-cd gsos-power && claude plugin tag --push
-# or manually:
-git tag gsos-power--v1.0.1 && git push origin gsos-power--v1.0.1
-```
-
-**Why:** Same reason as the v1.0.0 tag push at ship — without `gsos-power--v1.0.1`, anyone installing `gsos-power` after this PR merges would resolve to v1.0.0 (the prior tag). They would not see the corrected description nor the version-aligned manifest.
-
-**Pros:** Dependency resolution stays accurate.
-
-**Cons:** None — this is the release procedure for every version bump.
-
-**Context:** Established in v1.0 ship (TODOS "v1.0 ship-time" item, now Completed). This is the standing procedure for every subsequent version bump on either plugin.
 
 ---
 
@@ -127,6 +152,30 @@ git tag gsos-power--v1.0.1 && git push origin gsos-power--v1.0.1
 ---
 
 ## Completed
+
+### v1.0.3: Restore /help skill (HIGH-1 from regression-diff)
+
+**Completed:** v1.0.3 (2026-05-10)
+
+Added `gsos/commands/help.md` with the v0 catalog text adapted to v1 namespacing (`/gsos:*` form). Skips pre-flight (no connectors), prints the catalog, and offers to invoke a chosen skill. Includes graceful "not a GSOS skill" handling for non-catalog input. Restores the founder discoverability path that was silently dropped in v1.0.0.
+
+### v1.0.3: Restore bilingual pre-flight error templates (HIGH-3 from regression-diff)
+
+**Completed:** v1.0.3 (2026-05-10)
+
+Added a "Bilingual error templates" section to `gsos/skills/tone-and-style/SKILL.md` covering the 6 most common error surfaces: connector OAuth, Notion DB schema mismatch, Notion 5xx, LLM context overflow, idempotency lock conflict, and outbound data confirmation. Each template ships with EN + 日本語 phrasing. The bilingual templates override the English-only phrasing in `error-rescue-map/reference.md` whenever the founder operates in Japanese — restores compliance with CLAUDE.md "match founder's language" rule for the error path.
+
+### v1.0.3: Restore privacy share-confirmation gate (HIGH-4 from regression-diff)
+
+**Completed:** v1.0.3 (2026-05-10)
+
+Added an "Outbound data confirmation gate" subsection to `CLAUDE.md` Privacy boundary. The gate requires explicit "Confirm? (yes/no)" before any /gsos command sends founder data outside the GSOS stack (Slack, email, third-party services). Bilingual phrasing in `tone-and-style/SKILL.md`. Restores the v0 trust gate that was silently dropped in v1.0.0.
+
+### Post-v1.0.1: push gsos-power--v1.0.1 tag after merge
+
+**Completed:** v1.0.1 (2026-05-08)
+
+Pushed `gsos-power--v1.0.1` (92f7981) to origin via `claude plugin tag --push` from `gsos-power/`. Dependency resolution now correctly maps `gsos-power@~1.0.0` to v1.0.1 for any future installer.
 
 ### v1.0 ship-time: tag both plugins per Anthropic convention
 

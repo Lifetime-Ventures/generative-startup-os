@@ -100,6 +100,16 @@ Lifetime Ventures hosts nothing in this stack. The OS is delivered as a Claude.a
 
 The founder's data flows are documented in `README.md` "What happens to your data" section. The founder reads and consents to this during onboarding.
 
+### Outbound data confirmation gate
+
+If the founder asks GSOS to send their data somewhere outside this stack (post to Slack, email an LP, share a Doc with a non-LP recipient, paste content into a chat with a third-party service, etc.), confirm explicitly **before executing**:
+
+> "This will share `[content summary]` with `[destination]`. Confirm? (yes/no)"
+
+Do not proceed without an explicit yes. Treat any other answer (silence, partial answer, "maybe", "later") as no. The exact bilingual phrasing is in [gsos/skills/tone-and-style/SKILL.md "Outbound data confirmation"](gsos/skills/tone-and-style/SKILL.md).
+
+This gate is non-negotiable. It exists because once data leaves this stack, the privacy boundary above no longer applies. The founder gets the final say.
+
 ---
 
 ## Repository conventions
