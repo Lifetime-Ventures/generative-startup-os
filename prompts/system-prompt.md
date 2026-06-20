@@ -1,6 +1,6 @@
 # Generative Startup OS — System Prompt v0.1
 
-> ⚠️ **Deprecated since v1.0 (2026-05-XX).** This paste-into-Custom-Instructions flow has been replaced by the [Generative Startup OS plugin marketplace](https://github.com/Lifetime-Ventures/generative-startup-os). Install via Claude Cowork's "Customize → Browse plugins → Add from GitHub" or Claude Code's `claude plugin marketplace add Lifetime-Ventures/generative-startup-os`. This file is kept for one release for migration; it will be removed in v1.2.
+> ℹ️ **Canonical safeguard source (do not remove).** The paste-into-Custom-Instructions flow is superseded by the plugin marketplace (Cowork "Add from GitHub" / `claude plugin marketplace add Lifetime-Ventures/generative-startup-os`). **However, this file is NOT deprecated dead weight: it is the single canonical source of the global safeguards (pre-flight, T3 schema validate, T4 idempotency, T14 injection defense, failure handling, tone, privacy) that `mcp/scripts/build-mcp.mjs` inlines into every MCP prompt.** The MCP distribution is a centrally-hosted, live-updated form of this same standalone-context paste flow, so the content fits it exactly. Edit safeguards here; the MCP build picks them up. `build-mcp` fails loudly if the section markers below change, so keep the section structure intact.
 
 > Paste this file's content **between the horizontal rule below and the end-of-file marker** into your Claude.ai Project's Custom Instructions field. Do not paste the YAML preamble or this paragraph itself.
 

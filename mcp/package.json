@@ -8,7 +8,9 @@
     "predeploy": "npm run build",
     "deploy": "wrangler deploy",
     "dev": "npm run build && wrangler dev",
-    "check": "npm run build && wrangler deploy --dry-run --outdir dist"
+    "check": "npm run build && wrangler deploy --dry-run --outdir dist",
+    "pretest": "node scripts/build-mcp.mjs",
+    "test": "node --test eval/safeguard-structural.test.mjs && node eval/safeguard-behavioral.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
