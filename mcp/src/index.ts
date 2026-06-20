@@ -38,6 +38,28 @@ export class GsosMCP extends McpAgent<Env> {
       );
     }
 
+    // --- same commands ALSO exposed as tools --------------------------------
+    // Claude.ai / Desktop surfaces MCP *prompts* only in the "+" menu (not via
+    // "/"), which non-engineer founders miss. Exposing each command as a
+    // zero-arg TOOL too lets the founder trigger it by just asking in natural
+    // language ("set up my OKRs" / "OKR設定して"). The tool returns the SAME
+    // composed body (safeguard preamble + command) so 3A holds either way.
+    for (const p of PROMPTS) {
+      const toolName = `gsos_${p.name.replace(/-/g, "_")}`;
+      this.server.registerTool(
+        toolName,
+        {
+          description: `Run the GSOS /${p.name} workflow. ${p.description} Trigger when the founder asks for this in any language.`,
+          inputSchema: {},
+        },
+        async () => ({
+          content: [
+            { type: "text", text: `Execute the following GSOS workflow now, in the founder's language:\n\n${p.body}` },
+          ],
+        })
+      );
+    }
+
     // --- onboarding conductor (zero-arg tool) -------------------------------
     // Reliably-surfaced entry point. Guides the founder through the steps MCP
     // cannot perform for them (template duplicate + connector auth). Kept
