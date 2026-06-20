@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [gsos 1.2.0] — /investor-update field-session fixes
+
+From a real workspace running `/gsos:investor-update` (PR #24). Backward
+compatible: no Notion `schema_version` change, no skill renames. Existing
+installs keep working; this release makes `/investor-update` tolerate real-world
+workspace variance and degrade honestly.
+
+### Added
+- **Auto-create a missing Investor Updates DB.** If the DB is absent from the
+  duplicated workspace, `/investor-update` creates it under the GSOS Home /
+  Mission page with the template-canonical schema and discloses this to the
+  founder (never silent), instead of failing.
+- `docs/schema-vocab.md` now also owns the **Decisions Log field-mapping table**
+  (`The Trade-off`→alternatives, `Assumption`→rationale, `D-ID`→`D_ID`,
+  `classification_confidence`→`confidence`) and a **confidence-encoding table**
+  (`7-10` / `High` / `>= 0.9` all mean high-confidence).
+
+### Changed
+- DB schema validator (T3) gains **Layer 3**: recognized variant schemas
+  (Decisions Log, confidence) auto-map; only genuinely unmapped fields prompt.
+- `/investor-update` confidence filter resolves per encoding instead of comparing
+  a raw value to `7`.
+- **Zero-complete-commitment month**: highlights fall back to in-progress KR
+  `current_value` traction with an explicit "no completions this period" note;
+  in-progress work is never written as done (tone-and-style no-exaggeration).
+- View-query reads now carry a **re-filter caveat**: re-apply date/status filters
+  app-side, since a view returns rows per the view's own filters.
+- `docs/error-rescue-map.md` (+ skill `reference.md`): rows 28 (DB auto-create)
+  and 29 (Decisions variant) added; row 22 (0-complete) revised; row 26
+  (SQL→view) extended with the re-filter caveat.
+
+### Compatibility
+- No `schema_version` change — founders do not run `/migrate`. Workspaces with a
+  variant Decisions Log or non-canonical confidence encodings now normalize
+  instead of mis-reading; a missing Investor Updates DB is created on first run.
+
 ## [gsos 1.1.0] — Schema-vocab normalization + field-session fixes
 
 From a real founder workspace running `/gsos:today` retroactively (PR #21).
