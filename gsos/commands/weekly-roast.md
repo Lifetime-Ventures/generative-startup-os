@@ -8,12 +8,12 @@ You are running `/gsos:weekly-roast`. Apply [core operating principles](../skill
 
 ## Pre-flight
 
-1. Verify Notion connector responsive.
-2. Apply [DB schema validator](../skills/notion-data-model/SKILL.md) on Weekly Commitment + Today's Focus + OKR Quarter DBs.
+1. Verify Notion connector responsive. `/weekly-roast` uses Notion only — do not gate on Circleback, Calendar, or Drive.
+2. Apply [DB schema validator](../skills/notion-data-model/SKILL.md) on Weekly Commitment + Today's Focus + OKR Quarter DBs — including the status value-vocabulary check (see [schema-vocab](../../../docs/schema-vocab.md)). Use `query_database_view` for reads, with SQL `query_data_sources` only as an Enterprise-only optimization that falls back to the view query on a 400 / permission error.
 
 ## Workflow
 
-1. Read Today's Focus + Weekly Commitment for current ISO week. Aggregate done / not-done.
+1. Read Today's Focus + Weekly Commitment for current ISO week. Aggregate done vs not-done by normalizing each row's `status` per [schema-vocab](../../../docs/schema-vocab.md) (done = Done-family; not-done = incomplete; exclude the Dropped-family) — do not test the literal `open` / `done`.
 
 2. Read Mission page. Compare commitments against Mission and KRs:
    - **Drift**: commitments without `related_KR` link (count, flag if more than 30 percent of week's commitments)

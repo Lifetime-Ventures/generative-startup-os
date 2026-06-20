@@ -10,11 +10,10 @@ You are running `/gsos:okr-set`. Apply the [core operating principles](../skills
 
 Before any action:
 
-1. Verify Notion connector responsive: `query_database` on Mission page (1-row request).
-2. Verify Circleback connector responsive: `list_meetings(limit=1)`.
-3. Verify Google Calendar connector responsive: `list_events` for today.
-4. Apply [DB schema validator](../skills/notion-data-model/SKILL.md) on Mission page + OKR Quarter + Weekly Commitment DBs.
-5. Acquire idempotency lock: read `lock_token` on Mission page metadata.
+1. Verify Notion connector responsive: a 1-row `query_database_view` on the Mission page. Use `query_database_view` for reads; SQL `query_data_sources` is an Enterprise-only optimization with automatic view-query fallback on a 400 / permission error (see [error-rescue-map](../skills/error-rescue-map/SKILL.md)).
+2. Verify Circleback connector responsive: `list_meetings(limit=1)` — **only on the Circleback path**. If `meeting_source: granola_zapier`, skip this check (the skill reads transcripts from Notion, not Circleback). `/okr-set` does not use Google Calendar or Drive, so do not gate on them.
+3. Apply [DB schema validator](../skills/notion-data-model/SKILL.md) on Mission page + OKR Quarter + Weekly Commitment DBs — including the status value-vocabulary check (see [schema-vocab](../../../docs/schema-vocab.md)).
+4. Acquire idempotency lock: read `lock_token` on Mission page metadata.
    - If set within 10 minutes: abort with "Another `/okr-set` is in progress. Retry in 10 minutes."
    - If set more than 10 minutes ago: clear stale lock + proceed.
    - If unset: set it (random 8-char string), continue.

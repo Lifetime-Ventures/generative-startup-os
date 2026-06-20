@@ -10,8 +10,9 @@ This skill is **founder-triggered**, not automated cron. Calendar reminder is ju
 
 ## Pre-flight
 
-1. Verify Notion + Circleback connectors responsive (or Notion only if `meeting_source: granola_zapier`).
-2. Apply [DB schema validator](../skills/notion-data-model/SKILL.md) on Meeting Notes + Weekly Commitment DBs.
+1. Verify Notion + Circleback connectors responsive (or Notion only if `meeting_source: granola_zapier`). These are the only connectors `/sync-all` uses — do not gate on Calendar or Drive.
+2. Apply [DB schema validator](../skills/notion-data-model/SKILL.md) on Meeting Notes + Weekly Commitment DBs — including the status value-vocabulary check (see [schema-vocab](../../../docs/schema-vocab.md)).
+3. Use `query_database_view` for reads; treat SQL `query_data_sources` as an Enterprise-only optimization with automatic view-query fallback on a 400 / permission error (see [error-rescue-map reference](../skills/error-rescue-map/reference.md)).
 
 ## Workflow
 
@@ -23,7 +24,7 @@ This skill is **founder-triggered**, not automated cron. Calendar reminder is ju
 
 3. **AI-extract action items** from each meeting's transcript. Use the [transcript-handling skill's](../skills/transcript-handling/SKILL.md) action extraction prompt.
 
-4. **Pairwise dedupe** between extracted candidates and existing open Weekly Commitments. Use the [transcript-handling skill's](../skills/transcript-handling/SKILL.md) dedupe prompt.
+4. **Pairwise dedupe** between extracted candidates and existing **incomplete** Weekly Commitments (status not in the Done/Dropped family per [schema-vocab](../../../docs/schema-vocab.md)). Use the [transcript-handling skill's](../skills/transcript-handling/SKILL.md) dedupe prompt.
 
 5. DUPLICATE → skip + add `source_meeting` relation to existing row. AMBIGUOUS → ask founder yes/no in chat. DISTINCT → add to candidate list.
 
