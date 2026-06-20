@@ -40,6 +40,7 @@ const GLOBAL_SAFEGUARDS = [
   { id: "idempotency-lock", needle: "lock_token" },
   { id: "privacy-boundary", needle: "Privacy" , ci: true },
   { id: "preamble-header", needle: "non-negotiable operating rules" },
+  { id: "language-mirror", needle: "respond in the language the founder", ci: true },
 ];
 
 test("manifest is non-empty and has the 5 core commands + help", () => {
