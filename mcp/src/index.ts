@@ -58,6 +58,10 @@ export class GsosMCP extends McpAgent<Env> {
         const text = [
           "# Welcome to Generative Startup OS",
           "",
+          "LANGUAGE: speak to the founder in THEIR language (Japanese in -> Japanese",
+          "out; English in -> English out). Do not default to English. Translate the",
+          "steps below into the founder's language when you relay them.",
+          "",
           "Walk the founder through these steps conversationally, ONE at a time,",
           "confirming each before moving on. Do not dump the whole list at once.",
           "You cannot perform these for them — guide, then verify by asking.",
