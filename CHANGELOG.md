@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [gsos 1.1.0] — Schema-vocab normalization + field-session fixes
+
+From a real founder workspace running `/gsos:today` retroactively (PR #21).
+Backward compatible: no Notion DB `schema_version` change, no skill renames, no
+removed skills. Existing installs keep working; this release makes GSOS tolerate
+real-world Notion field setups it previously mis-read.
+
+### Added
+- `docs/schema-vocab.md` — single source of truth for `status` value
+  vocabulary. Maps both the template-canonical sets and the common Notion-default
+  sets (`Not Started` / `In Progress` / `Done`; KR: `On Track` / `At Risk`) to
+  internal tokens. Canonical rule: *incomplete = not Done-family and not
+  Dropped-family*.
+- `/gsos:today` optional **target date** — run it for a specific past/future
+  weekday (parsed from the founder's message; no formal argument, zero-arg
+  invariant preserved). Weekend/holiday skip and the written `date` use the
+  target date.
+
+### Changed
+- DB schema validator (T3) now checks the `status` **value vocabulary** in
+  addition to column names: recognized sets auto-normalize; only an unmappable
+  value aborts. Skills no longer test the literal `open`/`done`.
+- KR scoring (`/gsos:today`) resolves `related_KR.status` via normalized tokens
+  (`behind` > `at_risk` > `on_track` > `not_started`).
+- Notion reads are **view-query-first** (`query_database_view`). SQL
+  (`query_data_sources`) is used only as an Enterprise + Notion-AI optimization
+  and falls back to a view query automatically on a 400 / permission error.
+- Pre-flight verifies **only the connectors each skill uses** (per-skill table).
+  Circleback is required only by `/okr-set` and `/sync-all`; `/today` =
+  Notion + Calendar; `/okr-set` dropped its unused Calendar check.
+- `docs/error-rescue-map.md` (+ skill `reference.md`): rows 26 (SQL→view
+  fallback) and 27 (value-vocab mismatch) added; rows 17 / 24 / 25 clarified.
+
+### Compatibility
+- No `schema_version` change — founders do **not** need to run `/migrate` or
+  rename their Notion select options. A workspace with Notion-default status
+  values now validates and normalizes instead of mis-reading.
+
 ## [Unreleased] — License migration to Apache-2.0
 
 ### Changed
