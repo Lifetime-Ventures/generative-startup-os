@@ -16,3 +16,8 @@ npm-debug.log*
 
 # Node.js
 node_modules/
+
+# GSOS MCP build
+mcp/node_modules/
+mcp/dist/
+mcp/.wrangler/

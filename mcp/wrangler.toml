@@ -1,0 +1,19 @@
+# GSOS MCP server (Stage 1). McpAgent requires a Durable Object binding.
+name = "gsos-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-03-10"
+compatibility_flags = ["nodejs_compat"]
+
+# Optional: published Notion template duplicate URL surfaced by start_onboarding.
+# Set via dashboard or `wrangler deploy --var NOTION_TEMPLATE_URL:https://...`,
+# or uncomment below. Leave unset until the public template is published.
+# [vars]
+# NOTION_TEMPLATE_URL = "https://www.notion.so/..."
+
+[[durable_objects.bindings]]
+name = "MCP_OBJECT"
+class_name = "GsosMCP"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["GsosMCP"]
