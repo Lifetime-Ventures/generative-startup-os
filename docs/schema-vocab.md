@@ -99,6 +99,50 @@ Never silently rewrite or add select options on the founder's DB — that is a
 schema change the founder did not request. The single exception is the explicit
 `/migrate` skill (Phase 2), which changes schema only with founder confirmation.
 
+## Confidence fields
+
+Applies to: `OKR Quarter.confidence`, `Decisions Log.confidence` /
+`classification_confidence`. Skill prose says things like "decisions with
+`confidence >= 7`", which assumes a 1–10 numeric scale — but real workspaces
+carry **three different confidence encodings**. Resolve to the boolean
+`high_confidence` token below; never compare the raw value to `7` directly.
+
+| DB / field | Encoding | `high_confidence` (the "≥7 equivalent") |
+|---|---|---|
+| `OKR Quarter.confidence` (template-canonical) | select `1-3` / `4-6` / `7-10` | `7-10` |
+| `OKR Quarter.confidence` (recognized variant) | select `High` / `Medium` / `Low` | `High` |
+| `Decisions Log.confidence` (template-canonical) | select `1-3` / `4-6` / `7-10` | `7-10` |
+| `Decisions Log.classification_confidence` (variant, `/sync-all`-derived) | float `0–1` (Layer-1 hit = `1.0`) | `>= 0.9` |
+
+So "high-confidence decisions" = `confidence` in `7-10` **OR** select `High`
+**OR** `classification_confidence >= 0.9`. A skill's confidence threshold MUST
+branch on the field's encoding (detect select vs. float vs. canonical) and apply
+the matching rule from this table. Mapping `Medium`/`Low` or `4-6`/`1-3` or
+floats `< 0.9` → not high-confidence.
+
+## Decisions Log field mapping
+
+Applies to: `Decisions Log`. The template-canonical schema and a recognized
+variant schema (created by a different decisions-extraction path, observed as
+`/sync-all`-derived) carry the same information under different column names.
+Map the variant to canonical on read:
+
+| Variant column | Canonical column | Meaning |
+|---|---|---|
+| `D-ID` | `D_ID` | decision identifier |
+| `The Trade-off` | `alternatives_considered` | alternatives / trade-off |
+| `Assumption` | `rationale` | rationale / underlying assumption |
+| `classification_confidence` (0–1) | `confidence` | confidence (via the table above) |
+| `Decision Type` | — (no canonical equivalent) | variant-only metadata; read-only, ignore for the draft |
+| `Status` | — (no canonical equivalent) | variant-only metadata; read-only, ignore for the draft |
+
+**Validation contract (T3, Decisions Log).** When the canonical columns are
+absent but a recognized variant is detected, **apply this mapping automatically**
+and proceed — do not ask the founder per row. Only **unmapped / unrecognized**
+required information (e.g. neither `rationale` nor `Assumption` present) raises a
+single founder confirmation. Variant-only columns with no canonical equivalent
+are read-only and excluded from the investor draft.
+
 ---
 
 *Generative Startup OS — Schema Vocabulary v0.1, 2026-06-20*
