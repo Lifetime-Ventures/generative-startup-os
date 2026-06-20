@@ -67,6 +67,18 @@ All databases include 3 standard properties (do not omit):
 
 User-added properties: prefix with `_user_*` (e.g., `_user_priority`, `_user_notes`). Skills read these but never write to them.
 
+**Status value vocabulary.** The `status` select options below are the
+template-canonical values. Founders who build the workspace by hand or start
+from a Notion task template often have the **capitalized Notion-default** sets
+instead (`Not Started` / `In Progress` / `Done` for completion fields;
+`Not Started` / `On Track` / `At Risk` / `Done` for KR status). Both are
+supported: skills normalize either set to internal tokens per
+[`docs/schema-vocab.md`](../docs/schema-vocab.md), where "incomplete" is defined
+as *not in the Done-family and not in the Dropped-family* — not a literal `open`.
+A status value that maps to no recognized token triggers the value-vocab mismatch
+abort (`docs/error-rescue-map.md`). You do **not** need to rename Notion's
+default options to the canonical lowercase set.
+
 ### Mission & Strategy (page, not DB)
 
 A single page with 5 H1 sections + metadata:

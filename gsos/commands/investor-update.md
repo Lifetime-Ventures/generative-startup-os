@@ -8,12 +8,12 @@ You are running `/gsos:investor-update`. Apply [core operating principles](../sk
 
 ## Pre-flight
 
-1. Verify Notion + Google Drive connectors responsive.
-2. Apply [DB schema validator](../skills/notion-data-model/SKILL.md) on Weekly Commitment + OKR Quarter + Decisions Log + Investor Updates DBs.
+1. Verify Notion + Google Drive connectors responsive. These are the only connectors `/investor-update` uses — do not gate on Circleback or Calendar.
+2. Apply [DB schema validator](../skills/notion-data-model/SKILL.md) on Weekly Commitment + OKR Quarter + Decisions Log + Investor Updates DBs — including the status value-vocabulary check (see [schema-vocab](../../../docs/schema-vocab.md)). Use `query_database_view` for reads, with SQL `query_data_sources` only as an Enterprise-only optimization that falls back to the view query on a 400 / permission error.
 
 ## Workflow
 
-1. Read past 30 days of Weekly Commitment with `status=done`, joined to OKR Quarter via `related_KR`.
+1. Read past 30 days of Weekly Commitment that are **complete** (status in the Done-family per [schema-vocab](../../../docs/schema-vocab.md) — do not test the literal `done`), joined to OKR Quarter via `related_KR`.
 
 2. Read Decisions Log entries from past 30 days where `confidence >= 7`.
 
