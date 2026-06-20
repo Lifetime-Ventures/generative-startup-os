@@ -52,6 +52,12 @@ skill that depends on it fails outright for most founders.
   error from a SQL query, fall back automatically to the equivalent view query
   and continue. Never abort a skill because SQL was unavailable. (See
   `docs/error-rescue-map.md`, SQL→view fallback row.)
+- **Re-filter app-side after a view query.** A SQL query expresses its own
+  `where` clause, but a view query returns whatever the *view's* configured
+  filters allow — which may be broader or narrower than the skill needs. After
+  reading via `query_database_view`, always re-apply the skill's intended
+  date-range and `status` filters in the skill logic; never assume the view
+  already scoped the rows correctly.
 
 ## Pre-flight check (run at start of EVERY skill)
 
@@ -125,6 +131,17 @@ Never compare a status field directly to `open` (or any single literal). "未完
 Dropped-family*, per `docs/schema-vocab.md`. When **writing** a status, write a
 value that already exists in the founder's option set (do not silently add or
 rewrite select options).
+
+**Layer 3 — recognized column-name variants (Decisions Log, confidence).** Some
+DBs ship under a recognized *variant* schema, not just renamed-by-mistake
+columns. `docs/schema-vocab.md` defines the Decisions Log field-mapping table
+(`The Trade-off` → alternatives, `Assumption` → rationale, `D-ID` → `D_ID`,
+`classification_confidence` → `confidence`) and the confidence-encoding table
+(numeric `7-10` / select `High` / float `>= 0.9` all mean "high-confidence").
+When canonical columns are absent but a recognized variant is present, **apply
+the mapping automatically and proceed** — raise a single founder confirmation
+only for genuinely unmapped required information, not per row. This is distinct
+from a Layer-1 abort (which is for an *unrecognized* missing column).
 
 User-added columns with `_user_*` prefix are the founder's customization. Read them but never write to them.
 
@@ -288,15 +305,15 @@ Pre-flight + schema validate. Then:
 
 ### `/investor-update` — month start, founder-triggered
 
-Pre-flight + schema validate. Then:
+Pre-flight + schema validate. Pre-flight also checks the **Investor Updates DB exists** (step 4 writes to it). If it is absent from the founder's workspace (template variance), do NOT abort: auto-create it under the GSOS Home / Mission page with the template-canonical schema (`month` title / `audience` / `draft_url` URL / `highlights` / `asks` / `linked_KRs` relation / `generated_at` date / `sent_at` date / `schema_version` / `created_by_skill` / `last_modified_at`), then **disclose explicitly**: "Your workspace had no Investor Updates DB, so I created one under your GSOS Home page. Future runs will reuse it." Never create it silently (no-silent-fail). Then:
 
 1. Read past 30 days of Weekly Commitment that are **complete** (status in the Done-family per `docs/schema-vocab.md` — e.g. `done` or `Done`), joined to OKR Quarter via `related_KR`.
-2. Read Decisions Log entries from past 30 days where `confidence >= 7`.
+2. Read Decisions Log entries from the past 30 days that are **high-confidence**. Resolve the Decisions Log schema and confidence encoding per `docs/schema-vocab.md`: if the workspace uses the variant schema (`D-ID` / `The Trade-off` / `Assumption` / `classification_confidence`, `/sync-all`-derived), apply the field-mapping table automatically and confirm only genuinely unmapped fields. High-confidence = `confidence` in `7-10` OR select `High` OR `classification_confidence >= 0.9`. Do not compare a raw value to `7` directly.
 3. Generate Google Doc draft via Drive connector, structured as:
-   - **This month's highlights** (KR done, key wins, traction signals)
+   - **This month's highlights** (KR done, key wins, traction signals). **If there are zero complete commitments this period** (all Not Started / In Progress per `docs/schema-vocab.md`): do not fabricate wins. Build highlights from **in-progress KR `current_value`** traction instead, and prepend an explicit note — "No commitments were completed this period; the highlights below are based on in-progress KR progress." Per tone-and-style, never write in-progress work as done; no exaggeration.
    - **Asks** (intros, hires, resources)
    - **KR progress** (`current_value` vs `target_metric` per KR)
-   - **Decisions made** (D-ID + 1-line rationale per decision)
+   - **Decisions made** (decision ID + 1-line rationale per decision, using the mapped fields)
 4. Write Investor Updates DB row with `draft_url` + `audience=all LPs` (founder can change), `generated_at=now`.
 5. Tell founder: "Draft saved to Google Doc: {URL}. Polish and send when ready."
 

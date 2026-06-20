@@ -79,6 +79,21 @@ A status value that maps to no recognized token triggers the value-vocab mismatc
 abort (`docs/error-rescue-map.md`). You do **not** need to rename Notion's
 default options to the canonical lowercase set.
 
+**Confidence encodings.** The `confidence` property (OKR Quarter, Decisions Log)
+also varies across real workspaces — numeric `7-10` selects, `High` / `Medium` /
+`Low` selects, and a `0–1` float `classification_confidence` (`/sync-all`-derived
+Decisions Log) all appear in the wild. Skills resolve each to a single
+`high_confidence` token (`7-10` OR `High` OR `>= 0.9`) rather than comparing to a
+raw `7`. The authoritative confidence-encoding table is in
+[`docs/schema-vocab.md`](../docs/schema-vocab.md).
+
+**Decisions Log schema variants.** A recognized variant Decisions Log
+(`D-ID` / `The Trade-off` / `Assumption` / `Decision Type` / `Status` /
+`classification_confidence`) is mapped to the canonical columns automatically per
+the Decisions Log field-mapping table in
+[`docs/schema-vocab.md`](../docs/schema-vocab.md) — you do not need to rebuild it
+to the canonical column names.
+
 ### Mission & Strategy (page, not DB)
 
 A single page with 5 H1 sections + metadata:
