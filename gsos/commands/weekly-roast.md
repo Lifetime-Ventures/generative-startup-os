@@ -15,15 +15,18 @@ You are running `/gsos:weekly-roast`. Apply [core operating principles](../skill
 
 1. Read Today's Focus + Weekly Commitment for current ISO week. Aggregate done vs not-done by normalizing each row's `status` per [schema-vocab](../../../docs/schema-vocab.md) (done = Done-family; not-done = incomplete; exclude the Dropped-family) — do not test the literal `open` / `done`.
 
-2. Read Mission page. Compare commitments against Mission and KRs:
+2. Read Mission page. Compare commitments against Mission and KRs. Judge **progress as risk closed, not activity** ([founder operating method](../skills/founder-operating-method/SKILL.md) §3.1): a KR under which many tasks completed but the underlying uncertainty did not move is stagnating.
    - **Drift**: commitments without `related_KR` link (count, flag if more than 30 percent of week's commitments)
-   - **Stagnate**: KR with `current_value` unchanged for 4 or more weeks
+   - **Stagnate**: KR with `current_value` unchanged for 4 or more weeks — i.e. the load-bearing risk hasn't moved
    - **Drag**: not-done items appearing 2 or more weeks in a row
 
-3. Output structured:
+3. Output structured (embody the [founder operating method](../skills/founder-operating-method/SKILL.md), do not lecture with it):
+   - **Open with what went right** — 1-2 specific wins / risks closed this week before the critique (§2.7 Gratitude). Build the verdict from a true baseline, not pure fault-finding.
    - One-line verdict ("This week was on-track / drifted on KR2 / a wash, here is why")
    - 3 observations (drift / stagnate / drag — be specific, cite row IDs)
-   - 1 forcing question (e.g., "If KR2 does not move next week, do you cut it or change strategy?")
+   - 1 forcing question framed around **the biggest unknown** (§3.1): "What single unresolved risk, if closed, most increases the odds this works — and did this week touch it?"
+   - If the week's decision set includes a high-stakes, irreversible call, you *may* offer **one** passive gut-check (§2.3): "Worth checking whether that's a calm decision or a scared one?" — never diagnose the founder's emotion. Skip it on routine weeks.
+   - If the founder has run hot for several weeks straight (no let-up in the done/not-done pattern), offer a light sustainability check-in (§2.9). Stay a work-OS — one line, not health tracking.
 
 4. Ask founder for next week's 5 commitments. Allow draft from this week's not-done + new ones. Write to Weekly Commitment DB with `week=next ISO week`, `source=weekly-roast`. Every row includes `schema_version: 1`, `created_by_skill: /gsos:weekly-roast`.
 

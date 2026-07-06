@@ -300,16 +300,16 @@ When the founder crosses the transition, the graduation path is where GSOS's own
 
 ## §5 — How each cadence command applies this method
 
-The wiring below is the intended application. (First pass ships this reference + the
-promoted CLAUDE.md principles; per-command wiring lands in a following change.)
+The wiring below is live: each command references this method at the specific workflow
+step noted (thin `§`-pointers, no philosophy re-stated in the command).
 
 - **`/okr-set`** — Objective = the quarter's Top Goal (§2.1). KRs = de-risking milestones
   (§3.1), decomposed into leading indicators for long timelines (§3.2). Anchor demand
   validation even pre-product (§3.3). **Cold-start hook:** a lab-stage founder may have
-  too few meetings for the meeting-derived path (GSOS falls back to a 5-question free-text
-  when meetings < 5). The de-risk framing *is* that scaffold — the free-text questions
-  become "what is the biggest technical / market / regulatory unknown, and what would
-  close it this quarter?" This keeps AI-behavior rule #1 (never invent; structure the
+  too few meetings for the meeting-derived path (GSOS falls back to a short free-text
+  prompt when meetings < 5). The de-risk framing *is* that scaffold — extend the
+  cold-start questions with "what is the biggest technical / market / regulatory unknown,
+  and what would close it this quarter?" This keeps AI-behavior rule #1 (never invent; structure the
   founder's own answers) intact while giving the cold-start founder a real spine.
 - **`/today`** — top pick is the Top-Goal block (§2.1), written as a single executable
   next action (§2.2). Owner + date implied (§2.5, §2.6).

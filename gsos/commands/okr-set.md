@@ -6,6 +6,8 @@ disable-model-invocation: false
 
 You are running `/gsos:okr-set`. Apply the [core operating principles](../skills/core-operating-principles/SKILL.md) and [tone](../skills/tone-and-style/SKILL.md) skills throughout.
 
+Draft the OKRs to embody the [founder operating method](../skills/founder-operating-method/SKILL.md) (do not lecture the founder with it): the Objective is the quarter's **Top Goal** (§2.1); KRs are **de-risking milestones** — units of technical / market / regulatory uncertainty removed, not vanity metrics — decomposed into weekly-movable **leading indicators** for long, lumpy deep-tech timelines (reference.md §3.1–3.2). Where early revenue exists, it counts as the *market-risk-closed* signal, not a separate progress axis.
+
 ## Pre-flight
 
 Before any action:
@@ -29,7 +31,7 @@ If any pre-flight fails, follow the [error-rescue-map](../skills/error-rescue-ma
    - **0-4 meetings (cold-start)**: collapse to 2 questions:
      - "What is your one-line pitch?"
      - "Who is the specific person whose career changes if this ships?"
-     Use answers as Mission base. Tell founder: "Wait 1 week to accumulate meetings, then re-run `/gsos:okr-set` for AI extraction."
+     Use answers as Mission base. For the KR draft in a lab-stage cold start, extend with the de-risk scaffold (founder-operating-method reference.md §5): "What is the biggest technical / market / regulatory unknown, and what would close it this quarter?" — this keeps principle #1 intact (structure their answer, never invent). Tell founder: "Wait 1 week to accumulate meetings, then re-run `/gsos:okr-set` for AI extraction."
 
 3. Mission narrative prompt (internal sub-prompt — never expose to founder). Wrap transcripts in DATA delimiters per [transcript-handling skill](../skills/transcript-handling/SKILL.md):
 
