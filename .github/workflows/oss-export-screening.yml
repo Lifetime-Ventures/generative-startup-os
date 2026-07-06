@@ -22,6 +22,9 @@ on:
       - 'notion-templates/**/*.md'
       - 'zapier-templates/**/*.md'
       - 'zapier-templates/**/*.json'
+      # plugin skills + commands (founder-facing product surface)
+      - 'gsos/**/*.md'
+      - 'gsos-power/**/*.md'
       - 'tools/*.py'
       - 'tools/*.sh'
       - 'README.md'
@@ -50,6 +53,9 @@ on:
       - 'notion-templates/**/*.md'
       - 'zapier-templates/**/*.md'
       - 'zapier-templates/**/*.json'
+      # plugin skills + commands (founder-facing product surface)
+      - 'gsos/**/*.md'
+      - 'gsos-power/**/*.md'
       - 'tools/*.py'
       - 'tools/*.sh'
       - 'README.md'

@@ -39,6 +39,8 @@ repos:
             prompts/.*\.(md|txt)|
             notion-templates/.*\.md|
             zapier-templates/.*\.(md|json)|
+            gsos/.*\.md|
+            gsos-power/.*\.md|
             tools/.*\.(py|sh)|
             tools/scan_keywords/.*\.txt|
             scripts/.*\.(sh|md)|

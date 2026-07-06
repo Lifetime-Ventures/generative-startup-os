@@ -78,6 +78,10 @@ INCLUDE_GLOBS = [
     "notion-templates/**/*.md",
     "zapier-templates/**/*.md",
     "zapier-templates/**/*.json",
+    # Plugin skills + commands (the actual product surface: SKILL.md, reference.md,
+    # command prompts). These carry founder-facing prose and must be screened.
+    "gsos/**/*.md",
+    "gsos-power/**/*.md",
     "tools/*.py",
     "tools/*.sh",
     # scripts/ operational helpers (added with future-plan/ infrastructure)
