@@ -29,7 +29,7 @@ Evaluate the skip against the **target date**, not the execution date. Read Miss
    - `due` proximity relative to the **target date** (target day > next day > later this week > later)
    - Recent `done_at` pattern (recently-stalled commitments get boosted)
 
-3. Pick 1-3 top items.
+3. Pick 1-3 top items. Per the [founder operating method](../skills/founder-operating-method/SKILL.md) **Top Goal** principle (§2.1), the #1 slot is the quarter's Top-Goal block — the single most important thing, done first — not merely the easiest or nearest-due task; use the score to order the rest. Phrase each pick as a single executable next action (§2.2).
 
 4. Write to Today's Focus DB with `date=<target date>`, `generated_by=/gsos:today`. Every row includes `schema_version: 1`. Write the `status` using a value that already exists in the founder's option set (per schema-vocab write rule).
 

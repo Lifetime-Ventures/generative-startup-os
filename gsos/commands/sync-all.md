@@ -28,7 +28,7 @@ This skill is **founder-triggered**, not automated cron. Calendar reminder is ju
 
 5. DUPLICATE → skip + add `source_meeting` relation to existing row. AMBIGUOUS → ask founder yes/no in chat. DISTINCT → add to candidate list.
 
-6. Show founder candidate list. Yes/no per item. Add accepted to Weekly Commitment DB with `source=from_meeting` and `source_meeting` relation set. Every row includes `schema_version: 1` and `created_by_skill: /gsos:sync-all`.
+6. Show founder candidate list. Yes/no per item. Write each accepted item as an **impeccable agreement** per the [founder operating method](../skills/founder-operating-method/SKILL.md) (§2.5–2.6): a single executable action, objectively verifiable, with an owner (**DRI**) and a due date — never a vague or unowned commitment. If an accepted item has no clear owner, set a provisional DRI rather than dropping it. Add accepted to Weekly Commitment DB with `source=from_meeting` and `source_meeting` relation set. Every row includes `schema_version: 1` and `created_by_skill: /gsos:sync-all`.
 
 ## Failure handling
 
