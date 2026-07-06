@@ -14,3 +14,8 @@ Summary (full text in CLAUDE.md):
 5. Pre-flight every skill.
 
 When any /gsos command starts, re-read CLAUDE.md and apply these principles. Do not duplicate them here — that risks divergence.
+
+These five govern **how the AI behaves**. For the **substance the AI coaches the founder
+toward** (Mochary Method, re-weighted for a pre-seed deep-tech founder — Top Goal,
+de-risk as progress, DRI, etc.), see the separate
+[founder-operating-method skill](../founder-operating-method/SKILL.md).
